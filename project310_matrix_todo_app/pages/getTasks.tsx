@@ -11,23 +11,24 @@ export default function GetTasks() {
     const taskElements: JSX.Element[] = [];
     for (let i = 0; i < tasks.length; i++) {
         taskElements.push(
-            <li key={tasks[i].id} className="p-4 border-b w-full h-200">
-                <div className="bg-grey text-black rounded-2xl shadow-lg p-4 ">
-                    <div className="flex justify-between">
-                        <div>{tasks[i].title}</div>
-                        <div>{tasks[i].dueDate}</div>
+            <li key={tasks[i].id} className="p-4 w-full">
+                <div className="rounded-2xl shadow-lg p-4">
+                    <div className="flex justify-between mb-2">
+                        <div className="font-bold text-black">{tasks[i].title}</div>
+                        <div className="text-black">{tasks[i].dueDate}</div>
                     </div>
-                    <div>{tasks[i].description}</div>
-                    <div>{tasks[i].category}</div>
+                    <div className="mb-2 text-black">{tasks[i].description}</div>
+                    <div className="mb-4 text-black">{tasks[i].category}</div>
                     <div className="flex justify-end">
-                    <Button isIconOnly color="danger" variant="faded" aria-label="Delete">
-                        <Image
-                            src="/delete.png"
-                            alt="Delete Icon"
-                            width={24}
-                            height={10}
-                        />
-                    </Button>
+                        <Button isIconOnly color="danger" variant="faded" aria-label="Delete">
+                            <Image
+                                key={tasks[i].id}
+                                src="/delete.png"
+                                alt="Delete Icon"
+                                width={24}
+                                height={24}
+                            />
+                        </Button>
                     </div>
                 </div>
             </li>
@@ -37,18 +38,16 @@ export default function GetTasks() {
     return (
         <div className="bg-white h-screen w-full pt-4">
             <div className="text-black ml-2 flex items-center justify-between">
-            <span>My Tasks</span>
-            <button className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 mr-5">
-                User
-            </button>
+                <span className="font-bold text-black">My Tasks</span>
+                <button className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 mr-5">
+                    User
+                </button>
             </div>
-        <div>
-        <ul>
-            {taskElements}
-        </ul>
+            <div className="mt-4">
+                <ul className="text-black">
+                    {taskElements}
+                </ul>
+            </div>
         </div>
-        </div>
-
-
-    )
+    );
 }
