@@ -1,7 +1,26 @@
 import { Button } from "@nextui-org/button";
 import Image from 'next/image';
+import { useEffect, useState } from "react";
 
-export default function GetTasks() {
+interface GetTasksProps {
+    inputValue: string;
+}
+
+export default function GetTasks({ inputValue }: GetTasksProps) {
+    const [name, setName] = useState("User");
+    useEffect(() => {
+        if (inputValue) {
+            fetch(`http://localhost:3000/api/getUserDetails?code=${inputValue}`)
+                .then(response => response.json())
+                .then(data => {
+                    setName(data['name'][0]['username']); // You can use this data to update the UI if needed
+                })
+                .catch(error => {
+                    console.error("Error fetching user details:", error);
+                });
+        }
+    }, [inputValue]);
+
     const tasks = [
         { id: 1, title: "Complete project report", description: "This is Task 1", category: "Work", dueDate: "2024-11-24 16:55:00" },
         { id: 2, title: "Buy groceries", description: "This is Task 2", category: "Work", dueDate: "2024-11-24 16:55:00" },
@@ -39,8 +58,8 @@ export default function GetTasks() {
         <div className="bg-white h-screen w-full pt-4">
             <div className="text-black ml-2 flex items-center justify-between">
                 <span className="font-bold text-black">My Tasks</span>
-                <button className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 mr-5">
-                    User
+                <button className="bg-app-purple text-white px-4 py-2 rounded hover:bg-purple-600 mr-5">
+                    {name}
                 </button>
             </div>
             <div className="mt-4">

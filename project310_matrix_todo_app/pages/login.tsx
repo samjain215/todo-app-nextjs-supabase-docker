@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import GetTasks from "./getTasks";
 
 export default function Login() {
@@ -7,32 +7,22 @@ export default function Login() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [inputValue, setInputValue] = useState("");
 
-    useEffect(() => {
-        if (loggedIn) {
-            fetch(`http://localhost:3000/api/login?code=${inputValue}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    setMessage(data.message);
-                    setLoggedIn(data.loggedIn);
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    setMessage("Login failed");
-                    setLoggedIn(false);
-                });
-        }
-    }, [loggedIn]);
-
     const handleInputChange = (event) => {
         setInputValue(event.target.value);
     };
 
     const handleLoginClick = () => {
-        if (inputValue) {
-            setLoggedIn(true);
-        } else {
-            setMessage("Please enter a code");
-        }
+        fetch(`http://localhost:3000/api/login?code=${inputValue}`)
+            .then((response) => response.json())
+            .then((data) => {
+                setMessage(data.message);
+                setLoggedIn(data.loggedIn);
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                setMessage("Login failed");
+                setLoggedIn(false);
+            });
     };
 
     if (!loggedIn) {
@@ -81,6 +71,6 @@ export default function Login() {
             </div>
         );
     } else {
-        return (<GetTasks />)
+        return (<GetTasks inputValue={inputValue} />)
     }
 }
