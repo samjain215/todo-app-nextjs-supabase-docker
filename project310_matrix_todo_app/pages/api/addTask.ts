@@ -5,12 +5,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { userID, title, desc } = req.body;
+  const { password, title, desc } = req.query;
 
-  if (!userID) {
+  if (!password) {
     return res
       .status(400)
-      .send({ error: true, message: "Unable to Add Task (Invalid User ID)" });
+      .send({ error: true, message: "Unable to Add Task (Invalid Password)" });
   }
   if (!title) {
     return res
@@ -24,22 +24,36 @@ export default async function handler(
     });
   }
 
-  // Add Task To Database
-  const response = await supabase.from("tasks").insert([
-    {
-      user_id: userID,
-      title: title,
-      description: desc,
-      category_id: 1,
-      priority_id: 1,
-      due_date: Date.now(),
-      status: "Pending",
-      created_at: Date.now(),
-    },
-  ]);
-  if (response.status === 200) {
-    res.status(200).send({ error: false, message: "", data: response.data });
-  } else {
-    res.status(response.status).send({ error: true, message: response.error });
+  const fetchUserID = await supabase
+    .from("users")
+    .select("user_id")
+    .eq("password", password);
+
+  if (fetchUserID.data) {
+    const userID = fetchUserID.data![0]["user_id"];
+    // Add Task To Database
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 7); // Add 7 days
+
+    const response = await supabase.from("tasks").insert([
+      {
+        user_id: userID,
+        title: title,
+        description: desc,
+        category_id: 1,
+        priority_id: 1,
+        due_date: dueDate.toISOString(), // Use ISO format with 7 days added
+        status: "Pending",
+        created_at: new Date().toISOString(), // Use ISO format
+      },
+    ]);
+
+    console.log(response.status);
+    if (response.status === 201) {
+      res.status(200).send({ error: false, message: "", data: response.data });
+    } else {
+      console.error("Internal Server Error");
+      res.status(500).send({ error: true, message: response.error });
+    }
   }
 }
