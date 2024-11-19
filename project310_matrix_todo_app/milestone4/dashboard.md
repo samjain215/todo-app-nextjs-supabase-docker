@@ -2,7 +2,7 @@
 
 # Overview
 
-The team has made significant progress in the development of our project over the last cycle. We've collectively tackled essential components to ensure both frontend and backend functionalities are coming together smoothly. Below is a summary of our progress so far, reflecting our efforts in an Agile environment.
+The team has made progress in the development of the project over the last cycle. We've collectively tackled essential components to ensure both frontend and backend functionalities are coming together smoothly. Below is a summary of our progress so far, reflecting our efforts in an Agile environment.
 
 ### Activities Overview
 
@@ -26,22 +26,25 @@ The team has made significant progress in the development of our project over th
 - **Completed Tasks**:
     - Supabase setup with NextJS.
     - UI development for viewing and adding tasks.
-    - Full CRUD functionality for tasks, including Add, Get, Update, and Delete.
+    - Full CRUD functionality for tasks, including Add, Get
     - Authentication (Auth) integration.
     - Unit tests for Add Task feature.
 - **Pending Tasks**:
+    - Revamp the Authentication Using Supabase.
     - Implement task update and delete UI.
     - Develop additional test cases for all CRUD functionalities.
     - Integrate more robust error handling mechanisms.
+    - Write Tests for the other APIs such as (Delete, Update, Authenticate, ...)
+    - Share Tasks
+    - Collaborate Tasks and Change the view based on the user
+    - Dockerisation
+    - CI/CD Pipeline (Automation of Tests)
 
 ### Agile Metrics
 
 - **Velocity**: The team has completed 7 Pull Requests in this cycle.
-- **Burn-Up Chart**: This chart represents our progress so far, illustrating the number of completed tasks versus the overall task goals. We are on track to meet our project milestones, but we need to increase the velocity slightly to complete pending tasks in time.
 
 ### Review & Retrospective (R&R)
-
-During the R&R, the team focused on what has been accomplished so far as well as reflecting on how the process has gone.
 
 - **Successes**: Successful setup of the project foundation with the integration of NextJS and Supabase, seamless task management CRUD operations, and effective user authentication.
 - **Challenges**: Implementing unit tests and integrating the backend with UI smoothly posed some challenges. We will focus on improving collaboration between the frontend and backend teams.
@@ -50,17 +53,17 @@ During the R&R, the team focused on what has been accomplished so far as well as
 ### Branches/Tasks Completed and Merged
 
 - **Branches Completed**:
-    - `nextjs-setup`: Initialized the project and set up the Supabase integration.
-    - `get-tasks-ui`: Developed the UI for viewing tasks.
-    - `task-crud-operations`: Implemented CRUD operations for tasks.
-    - `add-task-ui`: Added the UI for task addition.
-    - `get-tasks-backend`: Integrated the backend to fetch tasks.
-    - `auth-integration`: Developed authentication features.
-    - `add-task-tests`: Added unit tests for task addition.
+    - `samyak/db-connection`: Initialized the project and set up the Supabase integration.
+    - `ansh/UI_getTasks`: Developed the UI for viewing tasks.
+    - `samyak/CRUD_operations`: Implemented CRUD operations for tasks.
+    - `ansh/UI_addTask`: Added the UI for task addition.
+    - `arjun/addTask_Test`: Added unit tests for task addition.
+    - `samyak/auth_ui_plus_backend`: Developed authentication features.
+    - `arjun/get-tasks`: Added unit tests for fetching task.
 
 ### Release Candidate
 
-The project currently has a working version with partial functionality that includes task viewing, adding, and authentication. This version is available on the master branch and will be further refined in subsequent releases.
+The project currently has a working version with partial functionality that includes task viewing, adding, and authentication. This version is available on the `requirements_engineering` branch and will be further refined in subsequent releases.
 
 ### Testing Report
 
