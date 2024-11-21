@@ -7,70 +7,81 @@ interface GetTasksProps {
   inputValue: string;
 }
 
+type Task = {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  dueDate: string;
+}
+
 export default function GetTasks({ inputValue }: GetTasksProps) {
   const [name, setName] = useState("User");
   const [tasks, setTasks] = useState([]);
   const router = useRouter();
+
   useEffect(() => {
     if (inputValue) {
+      // Fetch user details
       fetch(`http://localhost:3000/api/getUserDetails?code=${inputValue}`)
         .then((response) => response.json())
         .then((data) => {
-          setName(data["name"][0]["username"]); // You can use this data to update the UI if needed
+          setName(data?.name?.[0]?.username || "User"); // Use optional chaining for safety
         })
         .catch((error) => {
           console.error("Error fetching user details:", error);
         });
-    }
 
-    fetch(`http://localhost:3000/api/getTasks?password=${inputValue}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setTasks(data); // You can use this data to update the UI if needed
-      })
-      .catch((error) => {
-        console.error("Error fetching user details:", error);
-      });
+      // Fetch tasks
+      fetch(`http://localhost:3000/api/getTasks?password=${inputValue}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setTasks(data || []); // Ensure tasks are an array
+        })
+        .catch((error) => {
+          console.error("Error fetching tasks:", error);
+        });
+    }
   }, [inputValue]);
 
   const handleAddTask = () => {
-    router.push(`/addTask?password=${inputValue}`);
+    if (inputValue) {
+      router.push(`/addTask?password=${inputValue}`);
+    } else {
+      console.error("No inputValue provided for navigation.");
+    }
   };
 
-  const taskElements: JSX.Element[] = [];
-  for (let i = 0; i < tasks.length; i++) {
-    taskElements.push(
-      <li key={tasks[i]["id"]} className="p-4 w-full">
-        <div className="rounded-2xl shadow-lg p-4">
-          <div className="flex justify-between mb-2">
-            <div className="font-bold text-black">{tasks[i]["title"]}</div>
-            <div className="text-black">{tasks[i]["dueDate"]}</div>
-          </div>
-          <div className="mb-2 text-black">{tasks[i]["description"]}</div>
-          <div className="mb-4 text-black">{tasks[i]["category"]}</div>
-          <div className="flex justify-end">
-            <Button
-              isIconOnly
-              color="danger"
-              variant="faded"
-              aria-label="Delete"
-            >
-              <Image
-                key={tasks[i].id}
-                src="/delete.png"
-                alt="Delete Icon"
-                width={24}
-                height={24}
-              />
-            </Button>
-          </div>
+  const taskElements: JSX.Element[] = tasks.map((task: Task) => (
+    <li key={task.id} className="p-4 w-full">
+      <div className="rounded-2xl shadow-lg p-4">
+        <div className="flex justify-between mb-2">
+          <div className="font-bold text-black">{task.title}</div>
+          <div className="text-black">{task.dueDate}</div>
         </div>
-      </li>
-    );
-  }
+        <div className="mb-2 text-black">{task.description}</div>
+        <div className="mb-4 text-black">{task.category}</div>
+        <div className="flex justify-end">
+          <Button
+            isIconOnly
+            color="danger"
+            variant="faded"
+            aria-label="Delete"
+          >
+            <Image
+              src="/delete.png"
+              alt="Delete Icon"
+              width={24}
+              height={24}
+            />
+          </Button>
+        </div>
+      </div>
+    </li>
+  ));
 
   return (
-    <body className="bg-white h-screen w-full pt-4">
+    <div className="bg-white h-screen w-full pt-4">
       <div className="text-black ml-2 flex items-center justify-between">
         <span className="font-bold text-black">My Tasks</span>
         <div>
@@ -88,6 +99,6 @@ export default function GetTasks({ inputValue }: GetTasksProps) {
       <div className="mt-4">
         <ul className="text-black">{taskElements}</ul>
       </div>
-    </body>
+    </div>
   );
 }

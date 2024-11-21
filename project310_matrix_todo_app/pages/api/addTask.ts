@@ -9,16 +9,16 @@ export default async function handler(
 
   if (!password) {
     return res
-      .status(400)
+      .status(500)
       .send({ error: true, message: "Unable to Add Task (Invalid Password)" });
   }
   if (!title) {
     return res
-      .status(400)
+      .status(500)
       .send({ error: true, message: "Unable to Add Task (Invalid Title)" });
   }
   if (!desc) {
-    return res.status(400).send({
+    return res.status(500).send({
       error: true,
       message: "Unable to Add Task (Invalid Description)",
     });
@@ -50,7 +50,7 @@ export default async function handler(
 
     console.log(response.status);
     if (response.status === 201) {
-      res.status(200).send({ error: false, message: "", data: response.data });
+      res.status(201).send({ error: false, message: "", data: response.data });
     } else {
       console.error("Internal Server Error");
       res.status(500).send({ error: true, message: response.error });
