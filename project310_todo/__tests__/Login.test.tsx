@@ -10,6 +10,7 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import Login from '../app/login/page'
+import { describe, it } from 'node:test';
 
 // Tests if the page is rendering a input box for email
 describe('Login', () => {
