@@ -102,18 +102,18 @@ Unit Testing verifies the functionality of individual components in isolation. T
 
 ### Scenarios
 
-| Test Case ID | Description                                     | Expected Result                                                 | Contributor |
-| ------------ | ----------------------------------------------- | --------------------------------------------------------------- | ----------- |
-| **UT-1.1**   | Test task creation function with valid input    | Task created with all provided details and returns success code | AR          |
-| **UT-1.2**   | Test task creation with missing required fields | Returns error message for missing field(s)                      | SJ          |
-| **UT-1.3**   | Test task deletion function with valid task ID  | Task is deleted successfully and removed from the database      | AS          |
-| **UT-1.4**   | Test task deletion with invalid task ID         | Returns error message indicating task not found                 | AR          |
-| **UT-1.5**   | Test sorting function by due date               | Tasks are sorted in ascending order of due date                 | SJ          |
-| **UT-1.6**   | Test sorting function by priority               | Tasks are sorted by priority (e.g., High, Medium, Low)          | AS          |
-| **UT-1.7**   | Test reminder setting function for a task       | Reminder is set and returns success code                        | AR          |
-| **UT-1.8**   | Test login function with valid credentials      | User is logged in, session is created                           | SJ          |
-| **UT-1.9**   | Test login with incorrect password              | Returns error message for invalid credentials                   | AS          |
-| **UT-1.10**  | Test registration with duplicate username       | Returns error message indicating username already exists        | AR          |
+| Test Case ID | Description                                     | Expected Result                                                 | Contributor | Pass/Fail |
+| ------------ | ----------------------------------------------- | --------------------------------------------------------------- | ----------- | --------- |
+| **UT-1.1**   | Test task creation function with valid input    | Task created with all provided details and returns success code | AR          | Pass      |
+| **UT-1.2**   | Test task creation with missing required fields | Returns error message for missing field(s)                      | SJ          | Pass      |
+| **UT-1.3**   | Test task deletion function with valid task ID  | Task is deleted successfully and removed from the database      | AS          | Pass      |
+| **UT-1.4**   | Test task deletion with invalid task ID         | Returns error message indicating task not found                 | AR          | Pass      |
+| **UT-1.5**   | Test sorting function by due date               | Tasks are sorted in ascending order of due date                 | SJ          | Pending   |
+| **UT-1.6**   | Test sorting function by priority               | Tasks are sorted by priority (e.g., High, Medium, Low)          | AS          | Pending   |
+| **UT-1.7**   | Test reminder setting function for a task       | Reminder is set and returns success code                        | AR          | Pending   |
+| **UT-1.8**   | Test login function with valid credentials      | User is logged in, session is created                           | SJ          | Pending   |
+| **UT-1.9**   | Test login with incorrect password              | Returns error message for invalid credentials                   | AS          | Pending   |
+| **UT-1.10**  | Test registration with duplicate username       | Returns error message indicating username already exists        | AR          | Pending   |
 
 ---
 
@@ -123,15 +123,15 @@ Integration Testing verifies that different components of the app work together 
 
 ### Scenarios
 
-| Test Case ID | Description                                                   | Expected Result                                                  | Contributor |
-| ------------ | ------------------------------------------------------------- | ---------------------------------------------------------------- | ----------- |
-| **IT-2.1**   | Verify task creation from UI to backend and database          | Task is created on UI, saved in database, and displayed on UI    | SJ          |
-| **IT-2.2**   | Test task editing from UI and reflected in database           | Task edits are saved and updated correctly on UI and database    | AR          |
-| **IT-2.3**   | Verify task deletion from UI and database update              | Task deletion request removes task from database and UI          | AS          |
-| **IT-2.4**   | Test reminder notifications for shared tasks                  | Notifications are sent to all collaborators                      | AR          |
-| **IT-2.5**   | Validate login session management with Authentication Service | Valid session is maintained and expired after logout             | SJ          |
-| **IT-2.6**   | Verify integration of sorting function between backend and UI | Tasks are sorted in UI as per backend-sorted data                | AR          |
-| **IT-2.7**   | Test CI/CD pipeline for deploying changes                     | Updates are deployed successfully without breaking functionality | SJ          |
+| Test Case ID | Description                                                   | Expected Result                                                  | Contributor | Pass/Fail |
+| ------------ | ------------------------------------------------------------- | ---------------------------------------------------------------- | ----------- | --------- |
+| **IT-2.1**   | Verify task creation from UI to backend and database          | Task is created on UI, saved in database, and displayed on UI    | SJ          | Pending   |
+| **IT-2.2**   | Test task editing from UI and reflected in database           | Task edits are saved and updated correctly on UI and database    | AR          | Pending   |
+| **IT-2.3**   | Verify task deletion from UI and database update              | Task deletion request removes task from database and UI          | AS          | Pending   |
+| **IT-2.4**   | Test reminder notifications for shared tasks                  | Notifications are sent to all collaborators                      | AR          | Pending   |
+| **IT-2.5**   | Validate login session management with Authentication Service | Valid session is maintained and expired after logout             | SJ          | Pending   |
+| **IT-2.6**   | Verify integration of sorting function between backend and UI | Tasks are sorted in UI as per backend-sorted data                | AR          | Pending   |
+| **IT-2.7**   | Test CI/CD pipeline for deploying changes                     | Updates are deployed successfully without breaking functionality | SJ          | Pending   |
 
 ---
 
@@ -141,15 +141,15 @@ System Testing evaluates the app’s complete functionality in an end-to-end man
 
 ### Scenarios
 
-| Test Case ID | Description                                      | Expected Result                                                 | Contributor |
-| ------------ | ------------------------------------------------ | --------------------------------------------------------------- | ----------- |
-| **ST-3.1**   | Full task management flow (create, edit, delete) | User can create, edit, and delete tasks without issues          | SJ          |
-| **ST-3.2**   | Task sharing with collaborator                   | Task is shared, collaborator can view/edit based on permissions | AR          |
-| **ST-3.3**   | Task notifications for due dates                 | Notifications appear at scheduled times as per user settings    | AS          |
-| **ST-3.4**   | Verify reminder customization                    | Reminders can be customized and work as expected                | AR          |
-| **ST-3.5**   | Test sorting and filtering across multiple tasks | Tasks are correctly sorted and filtered in UI                   | SJ          |
-| **ST-3.6**   | Verify data backup and recovery functionality    | Data is backed up and can be restored successfully              | AR          |
-| **ST-3.7**   | Cross-platform compatibility test                | App performs consistently across desktop, mobile, and tablet    | SJ          |
+| Test Case ID | Description                                      | Expected Result                                                 | Contributor | Pass/Fail |
+| ------------ | ------------------------------------------------ | --------------------------------------------------------------- | ----------- | --------- |
+| **ST-3.1**   | Full task management flow (create, edit, delete) | User can create, edit, and delete tasks without issues          | SJ          |           |
+| **ST-3.2**   | Task sharing with collaborator                   | Task is shared, collaborator can view/edit based on permissions | AR          |           |
+| **ST-3.3**   | Task notifications for due dates                 | Notifications appear at scheduled times as per user settings    | AS          |           |
+| **ST-3.4**   | Verify reminder customization                    | Reminders can be customized and work as expected                | AR          |           |
+| **ST-3.5**   | Test sorting and filtering across multiple tasks | Tasks are correctly sorted and filtered in UI                   | SJ          |           |
+| **ST-3.6**   | Verify data backup and recovery functionality    | Data is backed up and can be restored successfully              | AR          |           |
+| **ST-3.7**   | Cross-platform compatibility test                | App performs consistently across desktop, mobile, and tablet    | SJ          |           |
 
 ---
 
@@ -159,14 +159,14 @@ Acceptance Testing validates that the app meets all requirements and is ready fo
 
 ### Scenarios
 
-| Test Case ID | Description                                      | Expected Result                                                | Contributor |
-| ------------ | ------------------------------------------------ | -------------------------------------------------------------- | ----------- |
-| **AT-4.1**   | Verify user registration and authentication      | Users can register and log in without issues                   | AR          |
-| **AT-4.2**   | Verify task creation, viewing, and deletion      | Users can create, view, and delete tasks reliably              | SJ          |
-| **AT-4.3**   | Ensure task sharing functionality is intuitive   | Users can share tasks with collaborators easily                | AS          |
-| **AT-4.4**   | Verify notifications are sent for due tasks      | Users receive timely notifications for upcoming tasks          | AR          |
-| **AT-4.5**   | Confirm customization options for reminders      | Users can customize reminders and settings                     | SJ          |
-| **AT-4.6**   | Ensure secure storage of user data               | All user data is encrypted and stored securely                 | AS          |
-| **AT-4.7**   | Check usability and accessibility standards      | UI is intuitive, accessible, and easy to navigate              | SJ          |
-| **AT-4.8**   | Validate CI/CD pipeline for production readiness | Updates are deployed successfully with no issues               | AS          |
-| **AT-4.9**   | Ensure consistent performance under high load    | App performs well even under heavy usage and large task volume | AR          |
+| Test Case ID | Description                                      | Expected Result                                                | Contributor | Pass/Fail |
+| ------------ | ------------------------------------------------ | -------------------------------------------------------------- | ----------- | --------- |
+| **AT-4.1**   | Verify user registration and authentication      | Users can register and log in without issues                   | AR          |           |
+| **AT-4.2**   | Verify task creation, viewing, and deletion      | Users can create, view, and delete tasks reliably              | SJ          |           |
+| **AT-4.3**   | Ensure task sharing functionality is intuitive   | Users can share tasks with collaborators easily                | AS          |           |
+| **AT-4.4**   | Verify notifications are sent for due tasks      | Users receive timely notifications for upcoming tasks          | AR          |           |
+| **AT-4.5**   | Confirm customization options for reminders      | Users can customize reminders and settings                     | SJ          |           |
+| **AT-4.6**   | Ensure secure storage of user data               | All user data is encrypted and stored securely                 | AS          |           |
+| **AT-4.7**   | Check usability and accessibility standards      | UI is intuitive, accessible, and easy to navigate              | SJ          |           |
+| **AT-4.8**   | Validate CI/CD pipeline for production readiness | Updates are deployed successfully with no issues               | AS          |           |
+| **AT-4.9**   | Ensure consistent performance under high load    | App performs well even under heavy usage and large task volume | AR          |           |
