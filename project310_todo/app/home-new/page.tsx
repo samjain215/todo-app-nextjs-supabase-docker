@@ -1,7 +1,10 @@
 "use client";
 
+import { supabase } from "@/lib/supabase";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Sidebar from "../components/sidebar";
 
 // Placeholder for Task type
 type Task = {
@@ -10,32 +13,88 @@ type Task = {
   description: string;
   completed: boolean;
   due_date: string;
+  priority_id: number;
+  display_due_date: string;
 };
 
 export default function NewHome() {
-  const [tasksUI, setTasksUI] = useState<Task[]>([]);
-  const [tasksNUI, setTasksNUI] = useState<Task[]>([]);
-  const [tasksUNI, setTasksUNI] = useState<Task[]>([]);
-  const [tasksNUNI, setTasksNUNI] = useState<Task[]>([]);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [currentQuadrant, setCurrentQuadrant] = useState<string>("");
-  const [newTask, setNewTask] = useState<{
+  // Navigation & Others
+  const router = useRouter();
+
+  // User Variables
+  const [userID, setUserID] = useState("");
+  const [displayName, setDisplayName] = useState("User");
+
+  // Task Variables
+  const [tasksUI, setTasksUI] = useState < Task[] > ([]);
+  const [tasksNUI, setTasksNUI] = useState < Task[] > ([]);
+  const [tasksUNI, setTasksUNI] = useState < Task[] > ([]);
+  const [tasksNUNI, setTasksNUNI] = useState < Task[] > ([]);
+  const [showModal, setShowModal] = useState < boolean > (false);
+  const [currentQuadrant, setCurrentQuadrant] = useState < string > ("");
+  const [newTask, setNewTask] = useState < {
     title: string;
     description: string;
     due_date: string;
-  }>({
+    display_due_date: string;
+  } > ({
     title: "",
     description: "",
     due_date: "",
+    display_due_date: ""
   });
+
+  const getUser = async () => {
+    const data = await supabase.auth.getUser();
+    console.log("DATA: ", data);
+    setUserID(data.data.user?.id ?? "123");
+
+    const response = await fetch("/api/users/getUserDetails", {
+      method: "POST",
+      body: JSON.stringify({
+        userID: userID
+      })
+    });
+    const json = await response.json();
+    if (json['error']) {
+      alert(`Error: ${json['error']}`)
+    } else {
+      const username = json['profile']['username'];
+      if (username != "")
+        setDisplayName(username);
+    }
+
+  };
 
   // Placeholder function for fetching tasks
   const fetchTasks = async () => {
-    const response = await fetch("/api/tasks");
+    const response = await fetch("/api/tasks/getTasks");
     const json = await response.json();
-    if (json["tasks"].length > 0) {
+    console.log("JSON => ", json);
+    if (json["tasks"]["UI"].length > 0) {
       setTasksUI(
-        json["tasks"].sort(
+        json["tasks"]["UI"].sort(
+          (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
+        )
+      );
+    }
+    if (json["tasks"]["NUI"].length > 0) {
+      setTasksNUI(
+        json["tasks"]["NUI"].sort(
+          (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
+        )
+      );
+    }
+    if (json["tasks"]["UNI"].length > 0) {
+      setTasksUNI(
+        json["tasks"]["UNI"].sort(
+          (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
+        )
+      );
+    }
+    if (json["tasks"]["NUNI"].length > 0) {
+      setTasksNUNI(
+        json["tasks"]["NUNI"].sort(
           (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
@@ -49,22 +108,41 @@ export default function NewHome() {
         task.task_id === taskId ? { ...task, completed: !task.completed } : task
       );
 
+    let reqTaskData: Task;
+
     switch (quadrant) {
       case "UI":
         setTasksUI(updatedTasks(tasksUI));
+        reqTaskData = tasksUI.filter((task) => task.task_id === taskId)[0];
         break;
       case "NUI":
         setTasksNUI(updatedTasks(tasksNUI));
+        reqTaskData = tasksNUI.filter((task) => task.task_id === taskId)[0];
         break;
       case "UNI":
         setTasksUNI(updatedTasks(tasksUNI));
+        reqTaskData = tasksUNI.filter((task) => task.task_id === taskId)[0];
         break;
       case "NUNI":
         setTasksNUNI(updatedTasks(tasksNUNI));
+        reqTaskData = tasksNUNI.filter((task) => task.task_id === taskId)[0];
         break;
       default:
+        setTasksUI(updatedTasks(tasksUI));
+        reqTaskData = tasksUI.filter((task) => task.task_id === taskId)[0];
         break;
     }
+
+    fetch("/api/tasks/completeTask", {
+      method: "POST",
+      body: JSON.stringify({ reqTaskData })
+    }).then((response) => response.json()).then((json) => {
+      if (json['error']) {
+        alert(`Unable to Update Task\n${json['message']}`)
+      }
+
+      console.log(json)
+    });
   };
 
   // Handle opening the modal
@@ -76,60 +154,74 @@ export default function NewHome() {
   // Handle closing the modal
   const handleCloseModal = () => {
     setShowModal(false);
-    setNewTask({ title: "", description: "", due_date: "" }); // Reset form
+    setNewTask({ title: "", description: "", due_date: "", display_due_date: "" }); // Reset form
   };
 
   // Handle task submission
   const handleSubmitTask = () => {
     const newTaskData = {
       task_id: Date.now(), // Generate unique id
+      user_id: userID,
       title: newTask.title,
       description: newTask.description,
       completed: false,
       due_date: newTask.due_date,
+      priority_id: 0,
+      category_id: 1,
+      display_due_date: newTask.display_due_date
     };
 
-    switch (currentQuadrant) {
-      case "UI":
-        setTasksUI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
-        break;
-      case "NUI":
-        setTasksNUI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
-        break;
-      case "UNI":
-        setTasksUNI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
-        break;
-      case "NUNI":
-        setTasksNUNI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
-        break;
-      default:
-        break;
-    }
+    // Add new task based on the current quadrant and update the state properly
+    const addTaskToState = (quadrant: string) => {
+      switch (quadrant) {
+        case "UI":
+          setTasksUI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
+          newTaskData.priority_id = 1;
+          break;
+        case "NUI":
+          setTasksNUI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
+          newTaskData.priority_id = 2;
+          break;
+        case "UNI":
+          setTasksUNI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
+          newTaskData.priority_id = 3;
+          break;
+        case "NUNI":
+          setTasksNUNI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
+          newTaskData.priority_id = 4;
+          break;
+        default:
+          break;
+      }
+    };
 
-    handleCloseModal();
+    // Call the function to update the state
+    addTaskToState(currentQuadrant);
+
+    // Send the task to the backend
+    fetch("/api/tasks/addTask", {
+      method: "POST",
+      body: JSON.stringify({ data: newTaskData }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        if (json["error"]) {
+          alert(json["message"]);
+        }
+      });
+
+    handleCloseModal(); // Close modal after task submission
   };
 
   useEffect(() => {
+    getUser();
     fetchTasks();
-  }, []);
+  }, [userID]);
 
   return (
     <div className="flex">
-      {/* Sidebar (Taskbar) */}
-      <div className="w-16 bg-gray-100 p-4 flex flex-col items-center space-y-4 border-r border-solid border-gray-300">
-        <button className="h-12 w-12 bg-red-500 text-white rounded-full flex items-center justify-center">
-          A
-        </button>
-        <button className="h-12 w-12 bg-green-500 text-black rounded-full flex items-center justify-center">
-          <Image
-            src="/colab_tasks.png"
-            alt="Colab Tasks"
-            height={24}
-            width={24}
-          />
-        </button>
-      </div>
-
+      <Sidebar displayName={displayName} />
       <div className="min-h-screen bg-gray-200 p-8 flex w-full">
         {/* Eisenhower Matrix */}
         <div className="w-full">
@@ -170,14 +262,13 @@ export default function NewHome() {
                         onChange={() => handleToggleTask(task.task_id, "UI")}
                       />
                       <span
-                        className={`${
-                          task.completed ? "line-through text-gray-500" : ""
-                        }`}
+                        className={`${task.completed ? "line-through text-gray-500" : ""
+                          }`}
                       >
                         {task.title}
                       </span>
                     </div>
-                    <div>{task.due_date}</div>
+                    <div>{task.display_due_date ?? task.due_date}</div>
                   </li>
                 ))}
               </ul>
@@ -217,14 +308,13 @@ export default function NewHome() {
                         onChange={() => handleToggleTask(task.task_id, "NUI")}
                       />
                       <span
-                        className={`${
-                          task.completed ? "line-through text-gray-500" : ""
-                        }`}
+                        className={`${task.completed ? "line-through text-gray-500" : ""
+                          }`}
                       >
                         {task.title}
                       </span>
                     </div>
-                    <div>{task.due_date}</div>
+                    <div>{task.display_due_date ?? task.due_date}</div>
                   </li>
                 ))}
               </ul>
@@ -262,14 +352,13 @@ export default function NewHome() {
                         onChange={() => handleToggleTask(task.task_id, "UNI")}
                       />
                       <span
-                        className={`${
-                          task.completed ? "line-through text-gray-500" : ""
-                        }`}
+                        className={`${task.completed ? "line-through text-gray-500" : ""
+                          }`}
                       >
                         {task.title}
                       </span>
                     </div>
-                    <div>{task.due_date}</div>
+                    <div>{task.display_due_date ?? task.due_date}</div>
                   </li>
                 ))}
               </ul>
@@ -309,14 +398,13 @@ export default function NewHome() {
                         onChange={() => handleToggleTask(task.task_id, "NUNI")}
                       />
                       <span
-                        className={`${
-                          task.completed ? "line-through text-gray-500" : ""
-                        }`}
+                        className={`${task.completed ? "line-through text-gray-500" : ""
+                          }`}
                       >
                         {task.title}
                       </span>
                     </div>
-                    <div>{task.due_date}</div>
+                    <div>{task.display_due_date ?? task.due_date}</div>
                   </li>
                 ))}
               </ul>
@@ -384,7 +472,8 @@ export default function NewHome() {
             </div>
           </div>
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }
