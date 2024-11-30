@@ -33,41 +33,34 @@
 
 ## Detailed List of Tasks
 
-1. [ ] **Design main task management interface layout for UI.** - _Author: AR_
+1. [x] **Design main task management interface layout for UI.** - _Author: AR_
 2. [ ] **Create mockups for task management screen for review.** - _Author: AS_
-3. [ ] **Implement basic UI elements and navigation for the task page.** - _Author: SJ_
+3. [x] **Implement basic UI elements and navigation for the task page.** - _Author: SJ_
 4. [ ] **Develop user-friendly navigation for task categories and priorities.** - _Author: AR_
-5. [ ] **Create form for adding new tasks with input validation.** - _Author: SJ_
+5. [x] **Create form for adding new tasks with input validation.** - _Author: SJ_
 6. [ ] **Develop form for editing existing tasks with error handling.** - _Author: AS_
 7. [ ] **Implement form for deleting tasks and confirmation prompt.** - _Author: AR_
 8. [ ] **Add sorting options for tasks by due date and priority.** - _Author: SJ_
-9. [ ] **Add filtering options for tasks by category and priority.** - _Author: AS_
-10. [ ] **Set up reminder display and notification prompts in the UI.** - _Author: AR_
+9. [ ] **Set up reminder display and notification prompts in the UI.** - _Author: AR_
 
 ---
 
-1. [ ] **Develop user registration form with server-side validation.** - _Author: SJ_
-2. [ ] **Implement user login and logout functionality with secure sessions.** - _Author: AS_
-3. [ ] **Set up password recovery and secure token generation.** - _Author: AR_
-4. [ ] **Integrate session expiration and logout on inactivity.** - _Author: SJ_
+1. [x] **Develop user registration form with server-side validation.** - _Author: SJ_
+2. [x] **Implement user login and logout functionality with secure sessions.** - _Author: AS_
+3. [ ] **Integrate session expiration and logout on inactivity.** - _Author: SJ_
 
 ---
 
-1. [ ] **Create backend CRUD operations for tasks (create, read, update, delete).** - _Author: AR_
+1. [x] **Create backend CRUD operations for tasks (create, read, update, delete).** - _Author: AR_
 2. [ ] **Implement backend support for priority, category, and reminder settings.** - _Author: AS_
 3. [ ] **Validate input for task fields like title, due date, and priority.** - _Author: SJ_
-
----
-
-1. [ ] **Add backend logic for sorting tasks by due date, priority, and category.** - _Author: AR_
-2. [ ] **Enable backend filtering of tasks by categories and priorities.** - _Author: SJ_
-3. [ ] **Implement dynamic updates on task changes using Observer Pattern.** - _Author: AS_
+4. [ ] **Add backend logic for sorting tasks by due date, priority, and category.** - _Author: AR_
 
 ---
 
 1. [ ] **Create feature to allow users to share tasks with collaborators.** - _Author: AR_
 2. [ ] **Develop notification system for updates to shared tasks.** - _Author: SJ_
-3. [ ] **Build interface for managing collaborators and setting permissions.** - _Author: AS_
+3. [ ] **Build interface for managing collaborators.** - _Author: AS_
 
 ---
 
@@ -77,14 +70,12 @@
 
 ---
 
-1. [ ] **Design database schema for tasks, categories, users, and permissions.** - _Author: AR_
-2. [ ] **Implement data encryption for sensitive user information.** - _Author: SJ_
-3. [ ] **Set up data backup and recovery processes for the database.** - _Author: AS_
+1. [x] **Design database schema for tasks, categories, users, and permissions.** - _Author: AR_
 
 ---
 
 1. [ ] **Configure CI/CD pipeline for automated building and testing.** - _Author: SJ_
-2. [ ] **Write unit tests for CRUD operations, sorting, and sharing features.** - _Author: AR_
+2. [x] **Write unit tests for CRUD operations, sorting, and sharing features.** - _Author: AS_
 3. [ ] **Develop integration tests for task management and notifications.** - _Author: AS_
 4. [ ] **Conduct performance testing for task load and notification handling.** - _Author: SJ_
 
