@@ -8,7 +8,7 @@ export default function Sidebar({ displayName }) {
     };
 
     const navigateToTasks = () => {
-        router.push("/home-new");
+        router.push("/home");
     };
 
     return (
