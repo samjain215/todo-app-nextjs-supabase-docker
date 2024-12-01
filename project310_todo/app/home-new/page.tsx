@@ -68,7 +68,7 @@ export default function NewHome() {
 
   // Placeholder function for fetching tasks
   const fetchTasks = async () => {
-    const response = await fetch("/api/tasks/getTasks");
+    const response = await fetch("/api/tasks/getTasks", { method: "POST", body: JSON.stringify({}) });
     const json = await response.json();
     console.log("JSON => ", json);
     if (json["tasks"]["UI"].length > 0) {

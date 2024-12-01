@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 
@@ -18,8 +18,19 @@ type Task = {
 
 const PST_TIMEZONE = "America/Los_Angeles"; // PST timezone
 
-export async function GET() {
-  const tasks = await supabase.from("tasks").select("*");
+export async function POST(req: NextRequest) {
+  const category: number = (await req.json())["category"];
+  console.log("category: ", category);
+
+  let tasks;
+  if (category) {
+    tasks = await supabase
+      .from("tasks")
+      .select("*")
+      .eq("category_id", category);
+  } else {
+    tasks = await supabase.from("tasks").select("*");
+  }
 
   // Type taskMap as Record of priority keys with arrays of Task
   const taskMap: Record<"UI" | "NUI" | "UNI" | "NUNI", Task[]> = {
