@@ -242,6 +242,7 @@ export default function NewHome() {
                   <p className="text-red-500 text-sm">Urgent & Important</p>
                 </div>
                 <button
+                  data-testid="UI_button_+"
                   className="text-2xl mr-3"
                   onClick={() => handleOpenModal("UI")}
                 >
@@ -419,53 +420,70 @@ export default function NewHome() {
           <div className="bg-white p-8 rounded-lg shadow-lg w-1/3">
             <h2 className="text-xl font-bold mb-4 text-black">Add New Task</h2>
             <div className="mb-4">
-              <label className="block text-sm font-bold mb-2 text-black">
+              <label
+                htmlFor="task-title"
+                className="block text-sm font-bold mb-2 text-black"
+              >
                 Task Title
               </label>
               <input
+                id="task-title"
                 type="text"
                 value={newTask.title}
                 onChange={(e) =>
                   setNewTask({ ...newTask, title: e.target.value })
                 }
                 className="w-full border rounded p-2 text-black"
+                aria-label="Task Title"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-bold mb-2 text-black">
+              <label
+                htmlFor="task-description"
+                className="block text-sm font-bold mb-2 text-black"
+              >
                 Task Description
               </label>
               <textarea
+                id="task-description"
                 value={newTask.description}
                 onChange={(e) =>
                   setNewTask({ ...newTask, description: e.target.value })
                 }
                 className="w-full border rounded p-2 text-black"
+                aria-label="Task Description"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-bold mb-2 text-black">
+              <label
+                htmlFor="task-due-date"
+                className="block text-sm font-bold mb-2 text-black"
+              >
                 Due Date
               </label>
               <input
+                id="task-due-date"
                 type="date"
                 value={newTask.due_date}
                 onChange={(e) =>
                   setNewTask({ ...newTask, due_date: e.target.value })
                 }
                 className="w-full border rounded p-2 text-black"
+                aria-label="Due Date"
               />
             </div>
             <div className="flex justify-end">
               <button
                 onClick={handleCloseModal}
                 className="bg-gray-400 text-white px-4 py-2 rounded mr-2"
+                data-testid="cancel-button"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmitTask}
                 className="bg-blue-500 text-white px-4 py-2 rounded"
+                data-testid="submit-button"
               >
                 Submit
               </button>
