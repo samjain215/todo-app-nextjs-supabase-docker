@@ -244,6 +244,7 @@ export default function NewHome() {
                   >
                     <div>
                       <input
+                        data-testid={`${task.task_id}`}
                         type="checkbox"
                         className="mr-2 w-3 h-3"
                         checked={task.completed}
