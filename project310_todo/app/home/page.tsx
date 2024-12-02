@@ -3,6 +3,7 @@
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import Sidebar from "../components/sidebar";
+import { Task } from "../types/db";
 
 export default function NewHome() {
   // User Variables
@@ -10,11 +11,11 @@ export default function NewHome() {
   const [displayName, setDisplayName] = useState("User");
 
   // Task Variables
-  const [tasksUI, setTasksUI] = useState([]);
-  const [tasksNUI, setTasksNUI] = useState([]);
-  const [tasksUNI, setTasksUNI] = useState([]);
-  const [tasksNUNI, setTasksNUNI] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [tasksUI, setTasksUI] = useState < Task[] > ([]);
+  const [tasksNUI, setTasksNUI] = useState < Task[] > ([]);
+  const [tasksUNI, setTasksUNI] = useState < Task[] > ([]);
+  const [tasksNUNI, setTasksNUNI] = useState < Task[] > ([]);
+  const [showModal, setShowModal] = useState < boolean > (false);
   const [currentQuadrant, setCurrentQuadrant] = useState("");
   const [newTask, setNewTask] = useState({
     title: "",
@@ -53,28 +54,28 @@ export default function NewHome() {
     if (json["tasks"]["UI"].length > 0) {
       setTasksUI(
         json["tasks"]["UI"].sort(
-          (a, b) => Number(a.completed) - Number(b.completed)
+          (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
     }
     if (json["tasks"]["NUI"].length > 0) {
       setTasksNUI(
         json["tasks"]["NUI"].sort(
-          (a, b) => Number(a.completed) - Number(b.completed)
+          (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
     }
     if (json["tasks"]["UNI"].length > 0) {
       setTasksUNI(
         json["tasks"]["UNI"].sort(
-          (a, b) => Number(a.completed) - Number(b.completed)
+          (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
     }
     if (json["tasks"]["NUNI"].length > 0) {
       setTasksNUNI(
         json["tasks"]["NUNI"].sort(
-          (a, b) => Number(a.completed) - Number(b.completed)
+          (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
     }
@@ -82,8 +83,8 @@ export default function NewHome() {
 
   // Handle toggle task completion
   const handleToggleTask = (taskId, quadrant) => {
-    const updatedTasks = (tasks) =>
-      tasks.map((task) => {
+    const updatedTasks = (tasks: Task[]) =>
+      tasks.map((task: Task) => {
         if (task.task_id === taskId) {
           task.completed = !task.completed;
           return task;
@@ -145,8 +146,8 @@ export default function NewHome() {
 
   // Handle task submission
   const handleSubmitTask = () => {
-    const newTaskData = {
-      task_id: Date.now(), // Generate unique id
+    const newTaskData: Task = {
+      task_id: "-1", // Generate unique id
       user_id: userID,
       title: newTask.title,
       description: newTask.description,
@@ -228,6 +229,7 @@ export default function NewHome() {
                   <p className="text-red-500 text-sm">Urgent & Important</p>
                 </div>
                 <button
+                  data-testid="UI_button_+"
                   className="text-2xl mr-3"
                   onClick={() => handleOpenModal("UI")}
                 >
@@ -405,53 +407,70 @@ export default function NewHome() {
           <div className="bg-white p-8 rounded-lg shadow-lg w-1/3">
             <h2 className="text-xl font-bold mb-4 text-black">Add New Task</h2>
             <div className="mb-4">
-              <label className="block text-sm font-bold mb-2 text-black">
+              <label
+                htmlFor="task-title"
+                className="block text-sm font-bold mb-2 text-black"
+              >
                 Task Title
               </label>
               <input
+                id="task-title"
                 type="text"
                 value={newTask.title}
                 onChange={(e) =>
                   setNewTask({ ...newTask, title: e.target.value })
                 }
                 className="w-full border rounded p-2 text-black"
+                aria-label="Task Title"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-bold mb-2 text-black">
+              <label
+                htmlFor="task-description"
+                className="block text-sm font-bold mb-2 text-black"
+              >
                 Task Description
               </label>
               <textarea
+                id="task-description"
                 value={newTask.description}
                 onChange={(e) =>
                   setNewTask({ ...newTask, description: e.target.value })
                 }
                 className="w-full border rounded p-2 text-black"
+                aria-label="Task Description"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-bold mb-2 text-black">
+              <label
+                htmlFor="task-due-date"
+                className="block text-sm font-bold mb-2 text-black"
+              >
                 Due Date
               </label>
               <input
+                id="task-due-date"
                 type="date"
                 value={newTask.due_date}
                 onChange={(e) =>
                   setNewTask({ ...newTask, due_date: e.target.value })
                 }
                 className="w-full border rounded p-2 text-black"
+                aria-label="Due Date"
               />
             </div>
             <div className="flex justify-end">
               <button
                 onClick={handleCloseModal}
                 className="bg-gray-400 text-white px-4 py-2 rounded mr-2"
+                data-testid="cancel-button"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmitTask}
                 className="bg-blue-500 text-white px-4 py-2 rounded"
+                data-testid="submit-button"
               >
                 Submit
               </button>

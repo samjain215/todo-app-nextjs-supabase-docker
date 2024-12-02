@@ -1,6 +1,5 @@
 "use client"
 
-import Image from 'next/image';
 import React from 'react';
 import { useState } from 'react';
 
@@ -22,6 +21,7 @@ export default function Login() {
                             Email Address
                         </label>
                         <input
+                            data-testid="__email__"
                             type="email"
                             id="email"
                             name="email"
