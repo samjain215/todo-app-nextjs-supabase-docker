@@ -19,12 +19,13 @@ export default function Profile() {
 
     const getUser = async () => {
         try {
-            const { data, error } = await supabase.auth.getUser();
-            if (error) throw error;
-            if (!data.user) throw new Error("No user found");
+            const re = await supabase.auth.getUser();
+            console.log("USERDATA => ", re);
+            if (re.error) throw error;
+            if (!re.data.user) throw new Error("No user found");
 
-            setEmail(data.user.email || "");
-            setUserID(data.user.id);
+            setEmail(re.data.user.email || "");
+            setUserID(re.data.user.id);
 
             const response = await fetch("/api/users/getUserDetails", {
                 method: "POST",
@@ -32,7 +33,7 @@ export default function Profile() {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    userID: data.user.id
+                    userID: re.data.user.id
                 }),
             });
 
@@ -112,6 +113,7 @@ export default function Profile() {
                         <div className="mt-5">
                             <label htmlFor="profileName" className="block text-sm font-medium text-gray-700">Profile name</label>
                             <input
+                                data-testid="__PROFILE__"
                                 type="text"
                                 id="profileName"
                                 value={profileName}
