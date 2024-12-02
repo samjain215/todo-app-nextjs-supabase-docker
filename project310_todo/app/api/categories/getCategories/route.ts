@@ -22,7 +22,7 @@ export async function GET() {
       error: false,
       message: "Categories Found",
       data: {
-        category: categories,
+        categories: categories,
       },
     });
   } else if (error) {
