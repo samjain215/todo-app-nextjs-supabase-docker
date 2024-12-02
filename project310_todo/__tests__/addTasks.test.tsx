@@ -1,5 +1,5 @@
 import { render, fireEvent, screen, act } from '@testing-library/react';
-import NewHome from '@/app/home-new/page';
+import NewHome from '@/app/home/page';
 import '@testing-library/jest-dom';
 
 // Mock fetch globally

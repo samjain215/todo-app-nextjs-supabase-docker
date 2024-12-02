@@ -1,26 +1,11 @@
 "use client";
 
 import { supabase } from "@/lib/supabase";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Sidebar from "../components/sidebar";
-
-// Placeholder for Task type
-type Task = {
-  task_id: number;
-  title: string;
-  description: string;
-  completed: boolean;
-  due_date: string;
-  priority_id: number;
-  display_due_date: string;
-};
+import { Task } from "../types/db";
 
 export default function NewHome() {
-  // Navigation & Others
-  const router = useRouter();
-
   // User Variables
   const [userID, setUserID] = useState("");
   const [displayName, setDisplayName] = useState("User");
@@ -31,13 +16,8 @@ export default function NewHome() {
   const [tasksUNI, setTasksUNI] = useState < Task[] > ([]);
   const [tasksNUNI, setTasksNUNI] = useState < Task[] > ([]);
   const [showModal, setShowModal] = useState < boolean > (false);
-  const [currentQuadrant, setCurrentQuadrant] = useState < string > ("");
-  const [newTask, setNewTask] = useState < {
-    title: string;
-    description: string;
-    due_date: string;
-    display_due_date: string;
-  } > ({
+  const [currentQuadrant, setCurrentQuadrant] = useState("");
+  const [newTask, setNewTask] = useState({
     title: "",
     description: "",
     due_date: "",
@@ -102,13 +82,18 @@ export default function NewHome() {
   };
 
   // Handle toggle task completion
-  const handleToggleTask = (taskId: number, quadrant: string) => {
-    const updatedTasks = (tasks: Task[]): Task[] =>
-      tasks.map((task) =>
-        task.task_id === taskId ? { ...task, completed: !task.completed } : task
+  const handleToggleTask = (taskId, quadrant) => {
+    const updatedTasks = (tasks: Task[]) =>
+      tasks.map((task: Task) => {
+        if (task.task_id === taskId) {
+          task.completed = !task.completed;
+          return task;
+        }
+        return task;
+      }
       );
 
-    let reqTaskData: Task;
+    let reqTaskData;
 
     switch (quadrant) {
       case "UI":
@@ -133,7 +118,9 @@ export default function NewHome() {
         break;
     }
 
-    fetch("/api/tasks/completeTask", {
+    console.log("Updating Task: ", reqTaskData);
+
+    fetch("/api/tasks/updateTask", {
       method: "POST",
       body: JSON.stringify({ reqTaskData })
     }).then((response) => response.json()).then((json) => {
@@ -146,7 +133,7 @@ export default function NewHome() {
   };
 
   // Handle opening the modal
-  const handleOpenModal = (quadrant: string) => {
+  const handleOpenModal = (quadrant) => {
     setShowModal(true);
     setCurrentQuadrant(quadrant);
   };
@@ -159,8 +146,8 @@ export default function NewHome() {
 
   // Handle task submission
   const handleSubmitTask = () => {
-    const newTaskData = {
-      task_id: Date.now(), // Generate unique id
+    const newTaskData: Task = {
+      task_id: "-1", // Generate unique id
       user_id: userID,
       title: newTask.title,
       description: newTask.description,
@@ -172,7 +159,7 @@ export default function NewHome() {
     };
 
     // Add new task based on the current quadrant and update the state properly
-    const addTaskToState = (quadrant: string) => {
+    const addTaskToState = (quadrant) => {
       switch (quadrant) {
         case "UI":
           setTasksUI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
@@ -250,7 +237,7 @@ export default function NewHome() {
                 </button>
               </div>
               <ul className="mr-4 ml-2 overflow-y-auto">
-                {tasksUI.map((task: Task) => (
+                {tasksUI.map((task) => (
                   <li
                     key={task.task_id}
                     className="mt-2 border-b border-red-200 text-sm flex items-center justify-between mb-1"
@@ -296,7 +283,7 @@ export default function NewHome() {
                 </button>
               </div>
               <ul className="mr-4 ml-2 overflow-y-auto">
-                {tasksNUI.map((task: Task) => (
+                {tasksNUI.map((task) => (
                   <li
                     key={task.task_id}
                     className="mt-2 border-b border-yellow-200 text-sm flex items-center justify-between mb-1"
@@ -340,7 +327,7 @@ export default function NewHome() {
                 </button>
               </div>
               <ul className="mr-4 ml-2 overflow-y-auto">
-                {tasksUNI.map((task: Task) => (
+                {tasksUNI.map((task) => (
                   <li
                     key={task.task_id}
                     className="mt-2 border-b border-blue-200 text-sm flex items-center justify-between mb-1"
@@ -386,7 +373,7 @@ export default function NewHome() {
                 </button>
               </div>
               <ul className="mr-4 ml-2 overflow-y-auto">
-                {tasksNUNI.map((task: Task) => (
+                {tasksNUNI.map((task) => (
                   <li
                     key={task.task_id}
                     className="mt-2 border-b border-green-200 text-sm flex items-center justify-between mb-1"
