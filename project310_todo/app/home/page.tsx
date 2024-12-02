@@ -3,7 +3,8 @@
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import Sidebar from "../components/sidebar";
-import { Task } from "../types/db";
+import { Category, Task } from "../types/db";
+import Selector from "../components/selector";
 
 export default function NewHome() {
   // User Variables
@@ -12,11 +13,12 @@ export default function NewHome() {
 
   // Task Variables
   const [tasksUI, setTasksUI] = useState < Task[] > ([]);
+  const [currentCategory, setCurrentCategory] = useState < Category > ({ category_id: 1, name: "Work" });
   const [tasksNUI, setTasksNUI] = useState < Task[] > ([]);
   const [tasksUNI, setTasksUNI] = useState < Task[] > ([]);
   const [tasksNUNI, setTasksNUNI] = useState < Task[] > ([]);
   const [showModal, setShowModal] = useState < boolean > (false);
-  const [currentQuadrant, setCurrentQuadrant] = useState("");
+  const [currentQuadrant, setCurrentQuadrant] = useState < "UI" | "NUI" | "UNI" | "NUNI" > ("UI");
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -47,8 +49,11 @@ export default function NewHome() {
   };
 
   // Placeholder function for fetching tasks
-  const fetchTasks = async () => {
-    const response = await fetch("/api/tasks/getTasks", { method: "POST", body: JSON.stringify({}) });
+  const fetchTasks = async (category: Category | undefined) => {
+    const response = category
+      ? await fetch("/api/tasks/getTasks", { method: "POST", body: JSON.stringify({ category: category.category_id }) })
+      : await fetch("/api/tasks/getTasks", { method: "POST", body: JSON.stringify({}) });
+
     const json = await response.json();
     console.log("JSON => ", json);
     if (json["tasks"]["UI"].length > 0) {
@@ -57,6 +62,8 @@ export default function NewHome() {
           (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
+    } else {
+      setTasksUI([]);
     }
     if (json["tasks"]["NUI"].length > 0) {
       setTasksNUI(
@@ -64,6 +71,8 @@ export default function NewHome() {
           (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
+    } else {
+      setTasksNUI([]);
     }
     if (json["tasks"]["UNI"].length > 0) {
       setTasksUNI(
@@ -71,6 +80,8 @@ export default function NewHome() {
           (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
+    } else {
+      setTasksUNI([]);
     }
     if (json["tasks"]["NUNI"].length > 0) {
       setTasksNUNI(
@@ -78,11 +89,13 @@ export default function NewHome() {
           (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
+    } else {
+      setTasksNUNI([]);
     }
   };
 
   // Handle toggle task completion
-  const handleToggleTask = (taskId, quadrant) => {
+  const handleToggleTask = (taskId: number, quadrant: "UI" | "NUI" | "UNI" | "NUNI") => {
     const updatedTasks = (tasks: Task[]) =>
       tasks.map((task: Task) => {
         if (task.task_id === taskId) {
@@ -133,7 +146,7 @@ export default function NewHome() {
   };
 
   // Handle opening the modal
-  const handleOpenModal = (quadrant) => {
+  const handleOpenModal = (quadrant: "UI" | "NUI" | "UNI" | "NUNI") => {
     setShowModal(true);
     setCurrentQuadrant(quadrant);
   };
@@ -147,19 +160,19 @@ export default function NewHome() {
   // Handle task submission
   const handleSubmitTask = () => {
     const newTaskData: Task = {
-      task_id: "-1", // Generate unique id
+      task_id: Date.now(), // Generate unique id
       user_id: userID,
       title: newTask.title,
       description: newTask.description,
       completed: false,
       due_date: newTask.due_date,
       priority_id: 0,
-      category_id: 1,
+      category_id: currentCategory.category_id,
       display_due_date: newTask.display_due_date
     };
 
     // Add new task based on the current quadrant and update the state properly
-    const addTaskToState = (quadrant) => {
+    const addTaskToState = (quadrant: "UI" | "NUI" | "UNI" | "NUNI") => {
       switch (quadrant) {
         case "UI":
           setTasksUI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
@@ -201,9 +214,15 @@ export default function NewHome() {
     handleCloseModal(); // Close modal after task submission
   };
 
+  const handleCategorySelected = async (category: Category) => {
+    console.log(category);
+    setCurrentCategory(category);
+    await fetchTasks(category);
+  }
+
   useEffect(() => {
     getUser();
-    fetchTasks();
+    fetchTasks(undefined);
   }, [userID]);
 
   return (
@@ -212,8 +231,11 @@ export default function NewHome() {
       <div className="min-h-screen bg-gray-200 p-8 flex w-full">
         {/* Eisenhower Matrix */}
         <div className="w-full">
-          <div className="text-2xl font-bold mb-8 text-black">
-            Eisenhower Matrix
+          <div className="flex items-center justify-between">
+            <div className="text-2xl font-bold mb-8 text-black">
+              Eisenhower Matrix
+            </div>
+            <Selector onCategorySelect={handleCategorySelected} />
           </div>
           <div className="grid grid-cols-2 gap-8">
             {/* Urgent & Important */}

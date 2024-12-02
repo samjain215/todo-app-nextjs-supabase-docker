@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Category } from "../types/db";
 
 export default function Selector({ onCategorySelect }) {
     const [categories, setCategories] = useState([]);
@@ -20,7 +21,7 @@ export default function Selector({ onCategorySelect }) {
         setIsOpen(!isOpen);
     };
 
-    const handleCategorySelect = (category) => {
+    const handleCategorySelect = (category: Category) => {
         setSelectedCategory(category.name);
         setIsOpen(false); // Close dropdown after selection
         if (onCategorySelect) {
@@ -48,10 +49,10 @@ export default function Selector({ onCategorySelect }) {
                 <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                     <div className="py-1">
                         {categories.length > 0 ? (
-                            categories.map((category) => (
+                            categories.map((category: Category) => (
                                 <button
                                     key={category.category_id}
-                                    onClick={handleCategorySelect(category)}
+                                    onClick={() => handleCategorySelect(category)}
                                     className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-start justify-start"
                                 >
                                     {category.name}
