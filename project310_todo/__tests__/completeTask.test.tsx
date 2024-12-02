@@ -100,12 +100,17 @@ global.fetch = jest.fn(() =>
 // Tests if the page is rendering a input box for email
 describe('Complete Task', () => {
     it('renders a checkbox for email', async () => {
-        render(<NewHome />)
-
+        await act(async () => {
+            render(<NewHome />);
+          });
+      
+        
         const inputBox = await screen.findByTestId(12);
         expect(inputBox).toBeInTheDocument();
         expect(inputBox).toHaveAttribute('type', 'checkbox');
-        fireEvent.click(inputBox);
+        await act(async () => {
+            fireEvent.click(inputBox);
+        })
         expect(inputBox).toBeChecked();
     })
 });
