@@ -1,4 +1,4 @@
-import { render, fireEvent, screen, act } from '@testing-library/react';
+import { render, fireEvent, screen, act, waitFor } from '@testing-library/react';
 import NewHome from '@/app/home/page';
 import '@testing-library/jest-dom';
 
@@ -108,10 +108,9 @@ describe('NewHome Component', () => {
     expect(screen.getByText(/Eisenhower Matrix/i)).toBeInTheDocument();
 
     // Verify the initial task is present
-    expect(screen.getByText("Let's Go to Italy")).toBeInTheDocument();
+    expect(screen.getByText("Initial Task Title: Initial Task Description")).toBeInTheDocument();
 
     // Find the edit button for the task with task_id '1'
-    // Assuming it has data-testid='edit-button-1'
     const editButton = screen.getByTestId(1);
 
     // Click the edit button
@@ -122,7 +121,7 @@ describe('NewHome Component', () => {
     // Verify the modal is opened
     expect(screen.getByText('Edit Task')).toBeInTheDocument();
 
-    // Since the values are already there, we can change them
+    // Change the task details
     await act(async () => {
       fireEvent.change(screen.getByLabelText('Task Title'), {
         target: { value: 'Updated Task Title' },
@@ -143,7 +142,11 @@ describe('NewHome Component', () => {
     // Verify the modal is closed
     expect(screen.queryByText('Edit Task')).not.toBeInTheDocument();
 
-    // Verify that the task shows the updated values
-    expect(screen.getByText('Updated Task Title')).toBeInTheDocument();
+    // Wait for the updated task to appear in the DOM
+    await waitFor(() => {
+      expect(
+        screen.getByText('Updated Task Title: Updated Task Description')
+      ).toBeInTheDocument();
+    });
   });
 });
