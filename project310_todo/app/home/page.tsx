@@ -11,17 +11,17 @@ export default function NewHome() {
   const [displayName, setDisplayName] = useState("User");
 
   // Task Variables
-  const [tasksUI, setTasksUI] = useState < Task[] > ([]);
-  const [tasksNUI, setTasksNUI] = useState < Task[] > ([]);
-  const [tasksUNI, setTasksUNI] = useState < Task[] > ([]);
-  const [tasksNUNI, setTasksNUNI] = useState < Task[] > ([]);
-  const [showModal, setShowModal] = useState < boolean > (false);
+  const [tasksUI, setTasksUI] = useState<Task[]>([]);
+  const [tasksNUI, setTasksNUI] = useState<Task[]>([]);
+  const [tasksUNI, setTasksUNI] = useState<Task[]>([]);
+  const [tasksNUNI, setTasksNUNI] = useState<Task[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const [currentQuadrant, setCurrentQuadrant] = useState("");
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
     due_date: "",
-    display_due_date: ""
+    display_due_date: "",
   });
 
   const getUser = async () => {
@@ -32,18 +32,16 @@ export default function NewHome() {
     const response = await fetch("/api/users/getUserDetails", {
       method: "POST",
       body: JSON.stringify({
-        userID: userID
-      })
+        userID: userID,
+      }),
     });
     const json = await response.json();
-    if (json['error']) {
-      alert(`Error: ${json['error']}`)
+    if (json["error"]) {
+      alert(`Error: ${json["error"]}`);
     } else {
-      const username = json['profile']['username'];
-      if (username != "")
-        setDisplayName(username);
+      const username = json["profile"]["username"];
+      if (username != "") setDisplayName(username);
     }
-
   };
 
   // Placeholder function for fetching tasks
@@ -90,8 +88,7 @@ export default function NewHome() {
           return task;
         }
         return task;
-      }
-      );
+      });
 
     let reqTaskData;
 
@@ -122,14 +119,16 @@ export default function NewHome() {
 
     fetch("/api/tasks/updateTask", {
       method: "POST",
-      body: JSON.stringify({ reqTaskData })
-    }).then((response) => response.json()).then((json) => {
-      if (json['error']) {
-        alert(`Unable to Update Task\n${json['message']}`)
-      }
+      body: JSON.stringify({ reqTaskData }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        if (json["error"]) {
+          alert(`Unable to Update Task\n${json["message"]}`);
+        }
 
-      console.log(json)
-    });
+        console.log(json);
+      });
   };
 
   // Handle opening the modal
@@ -141,7 +140,12 @@ export default function NewHome() {
   // Handle closing the modal
   const handleCloseModal = () => {
     setShowModal(false);
-    setNewTask({ title: "", description: "", due_date: "", display_due_date: "" }); // Reset form
+    setNewTask({
+      title: "",
+      description: "",
+      due_date: "",
+      display_due_date: "",
+    }); // Reset form
   };
 
   // Handle task submission
@@ -155,7 +159,7 @@ export default function NewHome() {
       due_date: newTask.due_date,
       priority_id: 0,
       category_id: 1,
-      display_due_date: newTask.display_due_date
+      display_due_date: newTask.display_due_date,
     };
 
     // Add new task based on the current quadrant and update the state properly
@@ -240,23 +244,28 @@ export default function NewHome() {
                 {tasksUI.map((task) => (
                   <li
                     key={task.task_id}
-                    className="mt-2 border-b border-red-200 text-sm flex items-center justify-between mb-1"
+                    className="mt-2 border border-red-200 text-sm mb-1 rounded-xl"
                   >
-                    <div>
-                      <input
-                        type="checkbox"
-                        className="mr-2 w-3 h-3"
-                        checked={task.completed}
-                        onChange={() => handleToggleTask(task.task_id, "UI")}
-                      />
-                      <span
-                        className={`${task.completed ? "line-through text-gray-500" : ""
+                    <div className="flex items-center justify-between bg-red w-full h-10">
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          className="ml-2 mr-2 w-3 h-3"
+                          checked={task.completed}
+                          onChange={() => handleToggleTask(task.task_id, "UI")}
+                        />
+                        <div
+                          className={`${
+                            task.completed ? "line-through text-gray-500" : ""
                           }`}
-                      >
-                        {task.title}
-                      </span>
+                        >
+                          {task.title}: {task.description}
+                        </div>
+                      </div>
+                      <div className="mr-2">
+                        {task.display_due_date ?? task.due_date}
+                      </div>
                     </div>
-                    <div>{task.display_due_date ?? task.due_date}</div>
                   </li>
                 ))}
               </ul>
@@ -296,8 +305,9 @@ export default function NewHome() {
                         onChange={() => handleToggleTask(task.task_id, "NUI")}
                       />
                       <span
-                        className={`${task.completed ? "line-through text-gray-500" : ""
-                          }`}
+                        className={`${
+                          task.completed ? "line-through text-gray-500" : ""
+                        }`}
                       >
                         {task.title}
                       </span>
@@ -340,8 +350,9 @@ export default function NewHome() {
                         onChange={() => handleToggleTask(task.task_id, "UNI")}
                       />
                       <span
-                        className={`${task.completed ? "line-through text-gray-500" : ""
-                          }`}
+                        className={`${
+                          task.completed ? "line-through text-gray-500" : ""
+                        }`}
                       >
                         {task.title}
                       </span>
@@ -386,8 +397,9 @@ export default function NewHome() {
                         onChange={() => handleToggleTask(task.task_id, "NUNI")}
                       />
                       <span
-                        className={`${task.completed ? "line-through text-gray-500" : ""
-                          }`}
+                        className={`${
+                          task.completed ? "line-through text-gray-500" : ""
+                        }`}
                       >
                         {task.title}
                       </span>
@@ -477,8 +489,7 @@ export default function NewHome() {
             </div>
           </div>
         </div>
-      )
-      }
-    </div >
+      )}
+    </div>
   );
 }
