@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Category } from "../types/db";
 
-export default function Selector({ onCategorySelect }) {
+export default function Selector({ onCategorySelect, testId }) {
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
     const [isOpen, setIsOpen] = useState(false);
@@ -37,7 +37,7 @@ export default function Selector({ onCategorySelect }) {
         <div className="relative inline-block text-left">
             <div>
                 <button
-                    data-testid="catSelectorButton"
+                    data-testid={testId}
                     type="button"
                     onClick={toggleDropdown}
                     className="inline-flex justify-center w-full rounded-xl border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
@@ -51,6 +51,7 @@ export default function Selector({ onCategorySelect }) {
                         {categories.length > 0 ? (
                             categories.map((category: Category) => (
                                 <button
+                                    data-testid={Number(category.category_id)}
                                     key={category.category_id}
                                     onClick={() => handleCategorySelect(category)}
                                     className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-start justify-start"

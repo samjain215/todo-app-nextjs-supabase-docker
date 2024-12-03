@@ -235,7 +235,9 @@ export default function NewHome() {
             <div className="text-2xl font-bold mb-8 text-black">
               Eisenhower Matrix
             </div>
-            <Selector onCategorySelect={handleCategorySelected} />
+            <Selector 
+            testId="category-selector"
+            onCategorySelect={handleCategorySelected} />
           </div>
           <div className="grid grid-cols-2 gap-8">
             {/* Urgent & Important */}
