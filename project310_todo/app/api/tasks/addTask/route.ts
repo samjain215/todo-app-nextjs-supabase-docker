@@ -2,7 +2,7 @@ import { supabase } from "@/lib/supabase";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const taskData = (await req.json())["data"];
+  const taskData = (await req.json())["reqTaskData"];
 
   console.log("Data => ", taskData);
 
