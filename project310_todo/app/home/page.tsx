@@ -340,6 +340,7 @@ export default function NewHome() {
                     className="mt-2 border border-red-200 text-sm mb-1 rounded-xl"
                   >
                     <button
+                      data-testid={Number(task.task_id)}
                       className="flex items-center justify-between bg-red w-full h-10"
                       onClick={() => handleOpenModal("UI", task)}
                     >
@@ -390,6 +391,7 @@ export default function NewHome() {
                     className="mt-2 border border-yellow-200 text-sm mb-1 rounded-xl"
                   >
                     <button
+                      data-testid={Number(task.task_id)}
                       className="flex items-center justify-between w-full h-10"
                       onClick={() => handleOpenModal("NUI", task)}
                     >
@@ -438,6 +440,7 @@ export default function NewHome() {
                     className="mt-2 border border-blue-200 text-sm mb-1 rounded-xl"
                   >
                     <button
+                      data-testid={Number(task.task_id)}
                       className="flex items-center justify-between w-full h-10"
                       onClick={() => handleOpenModal("UNI", task)}
                     >
@@ -486,6 +489,7 @@ export default function NewHome() {
                     className="mt-2 border border-green-200 text-sm mb-1 rounded-xl"
                   >
                     <button
+                      data-testid={Number(task.task_id)}
                       className="flex items-center justify-between w-full h-10"
                       onClick={() => handleOpenModal("NUNI", task)}
                     >
