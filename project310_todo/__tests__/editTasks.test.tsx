@@ -7,6 +7,54 @@ global.fetch = jest.fn(() =>
   Promise.resolve({
     json: () =>
       Promise.resolve({
+        data: {
+          "categories": [
+            {
+              "category_id": 1,
+              "name": "Work"
+            },
+            {
+              "category_id": 2,
+              "name": "Personal"
+            },
+            {
+              "category_id": 3,
+              "name": "Health"
+            },
+            {
+              "category_id": 4,
+              "name": "Urgent"
+            },
+            {
+              "category_id": 5,
+              "name": "Education"
+            },
+            {
+              "category_id": 6,
+              "name": "Shopping"
+            },
+            {
+              "category_id": 7,
+              "name": "Fitness"
+            },
+            {
+              "category_id": 8,
+              "name": "Hobbies"
+            },
+            {
+              "category_id": 9,
+              "name": "Travel"
+            },
+            {
+              "category_id": 10,
+              "name": "Finance"
+            },
+            {
+              "category_id": 11,
+              "name": "Clients"
+            }
+          ]
+        },
         profile: { username: 'Samyak Jain' },
         tasks: {
           UI: [
@@ -111,7 +159,7 @@ describe('NewHome Component', () => {
     expect(screen.getByText("Initial Task Title: Initial Task Description")).toBeInTheDocument();
 
     // Find the edit button for the task with task_id '1'
-    const editButton = screen.getByTestId(1);
+    const editButton = screen.getByTestId("button-1");
 
     // Click the edit button
     await act(async () => {

@@ -7,12 +7,14 @@ export async function POST(req: NextRequest) {
   delete taskData.reqTaskData.display_due_date;
   console.log("Update Task Data =>", taskData.reqTaskData);
 
+  const task = taskData.reqTaskData;
+
   const { data, error } = await supabase
     .from("tasks")
     .update({
-      completed: taskData.reqTaskData.completed,
+      ...task,
     })
-    .eq("task_id", taskData.reqTaskData.task_id);
+    .eq("task_id", task.task_id);
 
   if (data) console.log(data);
   if (error) {
