@@ -1,8 +1,8 @@
-import { render, fireEvent, screen, act } from '@testing-library/react';
+import { render, fireEvent, screen, act, waitFor } from '@testing-library/react';
 import NewHome from '@/app/home/page';
 import '@testing-library/jest-dom';
 
-// Mock fetch globally
+// Adjusted mock fetch to include a task with task_id '1'
 global.fetch = jest.fn(() =>
   Promise.resolve({
     json: () =>
@@ -55,17 +55,17 @@ global.fetch = jest.fn(() =>
             }
           ]
         },
-        profile: { username: "Samyak Jain" },
+        profile: { username: 'Samyak Jain' },
         tasks: {
           UI: [
             {
-              task_id: 12,
+              task_id: 1,
               user_id: 'c3978581-4ec1-4f63-9cb1-f2583d2f4b73',
-              title: 'weed',
-              description: 'smoke it ',
+              title: 'Initial Task Title',
+              description: 'Initial Task Description',
               category_id: 1,
               priority_id: 3,
-              due_date: '29 Dec',
+              due_date: '2024-12-29',
               status: 'Pending',
               created_at: '2024-11-29T01:25:12.764245+00:00',
               updated_at: null,
@@ -74,7 +74,7 @@ global.fetch = jest.fn(() =>
           ],
           NUI: [],
           UNI: [],
-          NUNI: []
+          NUNI: [],
         },
       }),
   })
@@ -146,7 +146,7 @@ jest.mock('next/navigation', () => ({
 }));
 
 describe('NewHome Component', () => {
-  it('renders the home page and adds a task to Urgent & Important', async () => {
+  it('renders the home page and edits a task in Urgent & Important', async () => {
     // Render the component inside an act() block
     await act(async () => {
       render(<NewHome />);
@@ -155,25 +155,30 @@ describe('NewHome Component', () => {
     // Verify the Eisenhower Matrix is present
     expect(screen.getByText(/Eisenhower Matrix/i)).toBeInTheDocument();
 
-    // Open the modal
-    const openModalButton = screen.getByTestId('UI_button_+UI');
+    // Verify the initial task is present
+    expect(screen.getByText("Initial Task Title: Initial Task Description")).toBeInTheDocument();
+
+    // Find the edit button for the task with task_id '1'
+    const editButton = screen.getByTestId("button-1");
+
+    // Click the edit button
     await act(async () => {
-      fireEvent.click(openModalButton);
+      fireEvent.click(editButton);
     });
 
     // Verify the modal is opened
-    expect(screen.getByText('Add New Task')).toBeInTheDocument();
+    expect(screen.getByText('Edit Task')).toBeInTheDocument();
 
-    // Fill the form
+    // Change the task details
     await act(async () => {
       fireEvent.change(screen.getByLabelText('Task Title'), {
-        target: { value: 'Test Task' },
+        target: { value: 'Updated Task Title' },
       });
       fireEvent.change(screen.getByLabelText('Task Description'), {
-        target: { value: 'This is a test task' },
+        target: { value: 'Updated Task Description' },
       });
       fireEvent.change(screen.getByLabelText('Due Date'), {
-        target: { value: '2024-11-30' },
+        target: { value: '2024-12-31' },
       });
     });
 
@@ -183,9 +188,13 @@ describe('NewHome Component', () => {
     });
 
     // Verify the modal is closed
-    expect(screen.queryByText('Add New Task')).not.toBeInTheDocument();
+    expect(screen.queryByText('Edit Task')).not.toBeInTheDocument();
 
-    // Use separate assertions for title and description
-    expect(screen.getByText('Test Task: This is a test task')).toBeInTheDocument();
+    // Wait for the updated task to appear in the DOM
+    await waitFor(() => {
+      expect(
+        screen.getByText('Updated Task Title: Updated Task Description')
+      ).toBeInTheDocument();
+    });
   });
 });

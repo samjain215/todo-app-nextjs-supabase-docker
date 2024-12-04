@@ -43,13 +43,14 @@ export default function TaskCard({ quadrant, tasks, handleOpenModal, handleToggl
                         className={`mt-2 border border-${header.color}-200 text-sm mb-1 rounded-xl`}
                     >
                         <button
-                            data-testid={Number(task.task_id)}
+                            data-testid={`button-${task.task_id}`}
                             className={`flex items-center justify-between bg-${header.color} w-full h-10`}
                             onClick={() => handleOpenModal(quadrant, task)}
                         >
                             <div className="flex items-center">
                                 <input
                                     type="checkbox"
+                                    data-testid={`checkbox-${task.task_id}`}
                                     className="ml-2 mr-2 w-3 h-3"
                                     checked={task.completed}
                                     onChange={() => { handleToggleTask(task.task_id, quadrant) }}

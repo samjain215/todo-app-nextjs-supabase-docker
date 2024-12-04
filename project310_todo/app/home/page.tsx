@@ -1,10 +1,13 @@
 "use client";
 
 import { supabase } from "@/lib/supabase";
-import { MouseEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../components/sidebar";
 import { Task } from "../types/db";
 import TaskCard from "../components/task_card";
+import { Category } from "../types/db";
+import { Category, Task } from "../types/db";
+import Selector from "../components/selector";
 
 export default function NewHome() {
   // User Variables
@@ -14,6 +17,7 @@ export default function NewHome() {
 
   // Task Variables
   const [tasksUI, setTasksUI] = useState < Task[] > ([]);
+  const [currentCategory, setCurrentCategory] = useState < Category > ({ category_id: 1, name: "Work" });
   const [tasksNUI, setTasksNUI] = useState < Task[] > ([]);
   const [tasksUNI, setTasksUNI] = useState < Task[] > ([]);
   const [tasksNUNI, setTasksNUNI] = useState < Task[] > ([]);
@@ -26,8 +30,6 @@ export default function NewHome() {
     due_date: "",
     display_due_date: "",
   });
-  const showModalRef = useRef(showModal);
-
 
   const getUser = async () => {
     const data = await supabase.auth.getUser();
@@ -50,8 +52,11 @@ export default function NewHome() {
   };
 
   // Placeholder function for fetching tasks
-  const fetchTasks = async () => {
-    const response = await fetch("/api/tasks/getTasks");
+  const fetchTasks = async (category: Category | undefined) => {
+    const response = category
+      ? await fetch("/api/tasks/getTasks", { method: "POST", body: JSON.stringify({ category: category.category_id }) })
+      : await fetch("/api/tasks/getTasks", { method: "POST", body: JSON.stringify({}) });
+
     const json = await response.json();
     console.log("JSON => ", json);
     if (json["tasks"]["UI"].length > 0) {
@@ -60,6 +65,8 @@ export default function NewHome() {
           (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
+    } else {
+      setTasksUI([]);
     }
     if (json["tasks"]["NUI"].length > 0) {
       setTasksNUI(
@@ -67,6 +74,8 @@ export default function NewHome() {
           (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
+    } else {
+      setTasksNUI([]);
     }
     if (json["tasks"]["UNI"].length > 0) {
       setTasksUNI(
@@ -74,6 +83,8 @@ export default function NewHome() {
           (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
+    } else {
+      setTasksUNI([]);
     }
     if (json["tasks"]["NUNI"].length > 0) {
       setTasksNUNI(
@@ -81,11 +92,13 @@ export default function NewHome() {
           (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
+    } else {
+      setTasksNUNI([]);
     }
   };
 
   // Handle toggle task completion
-  const handleToggleTask = (taskId, quadrant) => {
+  const handleToggleTask = (taskId: number, quadrant: "UI" | "NUI" | "UNI" | "NUNI") => {
     const updatedTasks = (tasks: Task[]) =>
       tasks.map((task: Task) => {
         if (task.task_id === taskId) {
@@ -221,14 +234,14 @@ export default function NewHome() {
   // Handle task submission
   const handleSubmitTask = () => {
     const newTaskData: Task = {
-      task_id: currentTask ? currentTask.task_id : "-1", // Generate unique id if new
+      task_id: Date.now(), // Generate unique id
       user_id: userID,
       title: newTask.title,
       description: newTask.description,
       completed: currentTask ? currentTask.completed : false,
       due_date: newTask.due_date,
       priority_id: 0,
-      category_id: 1,
+      category_id: currentCategory.category_id,
       display_due_date: newTask.display_due_date,
     };
 
@@ -306,9 +319,15 @@ export default function NewHome() {
     return e.stopPropagation();
   }
 
+  const handleCategorySelected = async (category: Category) => {
+    console.log(category);
+    setCurrentCategory(category);
+    await fetchTasks(category);
+  }
+
   useEffect(() => {
     getUser();
-    fetchTasks();
+    fetchTasks(undefined);
   }, [userID]);
 
   return (
@@ -317,8 +336,13 @@ export default function NewHome() {
       <div className="min-h-screen bg-gray-200 p-8 flex w-full">
         {/* Eisenhower Matrix */}
         <div className="w-full">
-          <div className="text-2xl font-bold mb-8 text-black">
-            Eisenhower Matrix
+          <div className="flex items-center justify-between">
+            <div className="text-2xl font-bold mb-8 text-black">
+              Eisenhower Matrix
+            </div>
+            <Selector
+              testId="category-selector"
+              onCategorySelect={handleCategorySelected} />
           </div>
           <div className="grid grid-cols-2 gap-8">
             {/* Urgent & Important */}
@@ -329,105 +353,107 @@ export default function NewHome() {
             <TaskCard tasks={tasksUNI} quadrant="UNI" handleOpenModal={handleOpenModal} handleToggleTask={handleToggleTask} preventPropagation={preventPropagation} buttonTestID="UI_button_+UNI" gTestID="UNI-Card" />
             {/* Not Urgent & Unimportant */}
             <TaskCard tasks={tasksNUNI} quadrant="NUNI" handleOpenModal={handleOpenModal} handleToggleTask={handleToggleTask} preventPropagation={preventPropagation} buttonTestID="UI_button_+NUNI" gTestID="NUNI-Card" />
-          </div>
-        </div>
-      </div>
+          </div >
+        </div >
+      </div >
 
       {/* Modal for adding/editing a task */}
-      {showModal && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              handleCloseModal();
-            }
-          }}
-        >
-          <div className="bg-white p-8 rounded-lg shadow-lg w-1/3">
-            <h2 className="text-xl font-bold mb-4 text-black">
-              {currentTask ? "Edit Task" : "Add New Task"}
-            </h2>
-            <div className="mb-4">
-              <label
-                htmlFor="task-title"
-                className="block text-sm font-bold mb-2 text-black"
-              >
-                Task Title
-              </label>
-              <input
-                id="task-title"
-                type="text"
-                value={newTask.title}
-                onChange={(e) =>
-                  setNewTask({ ...newTask, title: e.target.value })
-                }
-                className="w-full border rounded p-2 text-black"
-                aria-label="Task Title"
-              />
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="task-description"
-                className="block text-sm font-bold mb-2 text-black"
-              >
-                Task Description
-              </label>
-              <textarea
-                id="task-description"
-                value={newTask.description}
-                onChange={(e) =>
-                  setNewTask({ ...newTask, description: e.target.value })
-                }
-                className="w-full border rounded p-2 text-black"
-                aria-label="Task Description"
-              />
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="task-due-date"
-                className="block text-sm font-bold mb-2 text-black"
-              >
-                Due Date
-              </label>
-              <input
-                id="task-due-date"
-                type="date"
-                value={newTask.due_date}
-                onChange={(e) =>
-                  setNewTask({ ...newTask, due_date: e.target.value })
-                }
-                className="w-full border rounded p-2 text-black"
-                aria-label="Due Date"
-              />
-            </div>
-            <div className="flex justify-end">
-              {currentTask && (
-                <button
-                  onClick={handleDeleteTask}
-                  className="bg-red-500 text-white px-4 py-2 rounded mr-2"
-                  data-testid="delete-button"
+      {
+        showModal && (
+          <div
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                handleCloseModal();
+              }
+            }}
+          >
+            <div className="bg-white p-8 rounded-lg shadow-lg w-1/3">
+              <h2 className="text-xl font-bold mb-4 text-black">
+                {currentTask ? "Edit Task" : "Add New Task"}
+              </h2>
+              <div className="mb-4">
+                <label
+                  htmlFor="task-title"
+                  className="block text-sm font-bold mb-2 text-black"
                 >
-                  Delete
+                  Task Title
+                </label>
+                <input
+                  id="task-title"
+                  type="text"
+                  value={newTask.title}
+                  onChange={(e) =>
+                    setNewTask({ ...newTask, title: e.target.value })
+                  }
+                  className="w-full border rounded p-2 text-black"
+                  aria-label="Task Title"
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="task-description"
+                  className="block text-sm font-bold mb-2 text-black"
+                >
+                  Task Description
+                </label>
+                <textarea
+                  id="task-description"
+                  value={newTask.description}
+                  onChange={(e) =>
+                    setNewTask({ ...newTask, description: e.target.value })
+                  }
+                  className="w-full border rounded p-2 text-black"
+                  aria-label="Task Description"
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="task-due-date"
+                  className="block text-sm font-bold mb-2 text-black"
+                >
+                  Due Date
+                </label>
+                <input
+                  id="task-due-date"
+                  type="date"
+                  value={newTask.due_date}
+                  onChange={(e) =>
+                    setNewTask({ ...newTask, due_date: e.target.value })
+                  }
+                  className="w-full border rounded p-2 text-black"
+                  aria-label="Due Date"
+                />
+              </div>
+              <div className="flex justify-end">
+                {currentTask && (
+                  <button
+                    onClick={handleDeleteTask}
+                    className="bg-red-500 text-white px-4 py-2 rounded mr-2"
+                    data-testid="delete-button"
+                  >
+                    Delete
+                  </button>
+                )}
+                <button
+                  onClick={handleCloseModal}
+                  className="bg-gray-400 text-white px-4 py-2 rounded mr-2"
+                  data-testid="cancel-button"
+                >
+                  Cancel
                 </button>
-              )}
-              <button
-                onClick={handleCloseModal}
-                className="bg-gray-400 text-white px-4 py-2 rounded mr-2"
-                data-testid="cancel-button"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSubmitTask}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-                data-testid="submit-button"
-              >
-                {currentTask ? "Update" : "Submit"}
-              </button>
+                <button
+                  onClick={handleSubmitTask}
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  data-testid="submit-button"
+                >
+                  {currentTask ? "Update" : "Submit"}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 }
