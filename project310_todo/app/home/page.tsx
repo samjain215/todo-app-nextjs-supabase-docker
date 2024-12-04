@@ -1,14 +1,16 @@
 "use client";
 
 import { supabase } from "@/lib/supabase";
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import Sidebar from "../components/sidebar";
 import { Task } from "../types/db";
+import TaskCard from "../components/task_card";
 
 export default function NewHome() {
   // User Variables
   const [userID, setUserID] = useState("");
   const [displayName, setDisplayName] = useState("User");
+
 
   // Task Variables
   const [tasksUI, setTasksUI] = useState < Task[] > ([]);
@@ -24,6 +26,8 @@ export default function NewHome() {
     due_date: "",
     display_due_date: "",
   });
+  const showModalRef = useRef(showModal);
+
 
   const getUser = async () => {
     const data = await supabase.auth.getUser();
@@ -159,6 +163,61 @@ export default function NewHome() {
     }); // Reset form
   };
 
+  const addOrUpdateTaskToState = (quadrant, newTaskData) => {
+    switch (quadrant) {
+      case "UI":
+        if (currentTask) {
+          setTasksUI((prevTasks) =>
+            prevTasks.map((task) =>
+              task.task_id === currentTask.task_id ? newTaskData : task
+            )
+          );
+        } else {
+          setTasksUI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
+        }
+        newTaskData.priority_id = 1;
+        break;
+      case "NUI":
+        if (currentTask) {
+          setTasksNUI((prevTasks) =>
+            prevTasks.map((task) =>
+              task.task_id === currentTask.task_id ? newTaskData : task
+            )
+          );
+        } else {
+          setTasksNUI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
+        }
+        newTaskData.priority_id = 2;
+        break;
+      case "UNI":
+        if (currentTask) {
+          setTasksUNI((prevTasks) =>
+            prevTasks.map((task) =>
+              task.task_id === currentTask.task_id ? newTaskData : task
+            )
+          );
+        } else {
+          setTasksUNI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
+        }
+        newTaskData.priority_id = 3;
+        break;
+      case "NUNI":
+        if (currentTask) {
+          setTasksNUNI((prevTasks) =>
+            prevTasks.map((task) =>
+              task.task_id === currentTask.task_id ? newTaskData : task
+            )
+          );
+        } else {
+          setTasksNUNI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
+        }
+        newTaskData.priority_id = 4;
+        break;
+      default:
+        break;
+    }
+  };
+
   // Handle task submission
   const handleSubmitTask = () => {
     const newTaskData: Task = {
@@ -173,64 +232,8 @@ export default function NewHome() {
       display_due_date: newTask.display_due_date,
     };
 
-    // Add or update task based on the current quadrant and update the state properly
-    const addOrUpdateTaskToState = (quadrant) => {
-      switch (quadrant) {
-        case "UI":
-          if (currentTask) {
-            setTasksUI((prevTasks) =>
-              prevTasks.map((task) =>
-                task.task_id === currentTask.task_id ? newTaskData : task
-              )
-            );
-          } else {
-            setTasksUI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
-          }
-          newTaskData.priority_id = 1;
-          break;
-        case "NUI":
-          if (currentTask) {
-            setTasksNUI((prevTasks) =>
-              prevTasks.map((task) =>
-                task.task_id === currentTask.task_id ? newTaskData : task
-              )
-            );
-          } else {
-            setTasksNUI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
-          }
-          newTaskData.priority_id = 2;
-          break;
-        case "UNI":
-          if (currentTask) {
-            setTasksUNI((prevTasks) =>
-              prevTasks.map((task) =>
-                task.task_id === currentTask.task_id ? newTaskData : task
-              )
-            );
-          } else {
-            setTasksUNI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
-          }
-          newTaskData.priority_id = 3;
-          break;
-        case "NUNI":
-          if (currentTask) {
-            setTasksNUNI((prevTasks) =>
-              prevTasks.map((task) =>
-                task.task_id === currentTask.task_id ? newTaskData : task
-              )
-            );
-          } else {
-            setTasksNUNI((prevTasks) => [newTaskData, ...prevTasks]); // Add to top of list
-          }
-          newTaskData.priority_id = 4;
-          break;
-        default:
-          break;
-      }
-    };
-
     // Call the function to update the state
-    addOrUpdateTaskToState(currentQuadrant);
+    addOrUpdateTaskToState(currentQuadrant, newTaskData);
 
     // Send the task to the backend
     const endpoint = currentTask ? "/api/tasks/updateTask" : "/api/tasks/addTask";
@@ -298,6 +301,11 @@ export default function NewHome() {
     handleCloseModal();
   };
 
+
+  const preventPropagation = (e) => {
+    return e.stopPropagation();
+  }
+
   useEffect(() => {
     getUser();
     fetchTasks();
@@ -314,204 +322,13 @@ export default function NewHome() {
           </div>
           <div className="grid grid-cols-2 gap-8">
             {/* Urgent & Important */}
-            <div
-              className="bg-white rounded-lg text-black shadow-md p-4 flex flex-col justify-between"
-              style={{ height: "300px" }}
-            >
-              <div className="flex justify-between items-center mt-1 mb-2">
-                <div className="flex ml-2">
-                  <div className="h-5 w-5 text-sm border rounded-full bg-red-500 text-white mr-2 flex items-center justify-center">
-                    Ⅰ
-                  </div>
-                  <p className="text-red-500 text-sm">Urgent & Important</p>
-                </div>
-                <button
-                  data-testid="UI_button_+"
-                  className="text-2xl mr-3"
-                  onClick={() => handleOpenModal("UI")}
-                >
-                  +
-                </button>
-              </div>
-              <ul className="mr-4 ml-2 overflow-y-auto">
-                {tasksUI.map((task) => (
-                  <li
-                    key={task.task_id}
-                    className="mt-2 border border-red-200 text-sm mb-1 rounded-xl"
-                  >
-                    <button
-                      data-testid={Number(task.task_id)}
-                      className="flex items-center justify-between bg-red w-full h-10"
-                      onClick={() => handleOpenModal("UI", task)}
-                    >
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="ml-2 mr-2 w-3 h-3"
-                          checked={task.completed}
-                          onChange={() => handleToggleTask(task.task_id, "UI")}
-                        />
-                        <div
-                          className={`${task.completed ? "line-through text-gray-500" : ""}`}
-                        >
-                          {task.title}: {task.description}
-                        </div>
-                      </div>
-                      <div className="mr-2">
-                        {task.display_due_date ?? task.due_date}
-                      </div>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <TaskCard tasks={tasksUI} quadrant="UI" handleOpenModal={handleOpenModal} handleToggleTask={handleToggleTask} preventPropagation={preventPropagation} buttonTestID="UI_button_+UI" gTestID="UI-Card" />
             {/* Not Urgent & Important */}
-            <div
-              className="bg-white rounded-lg text-black shadow-md p-4 flex flex-col justify-between"
-              style={{ height: "300px" }}
-            >
-              <div className="flex justify-between items-center mt-1 mb-2">
-                <div className="flex ml-2">
-                  <div className="h-5 w-5 text-sm border rounded-full bg-yellow-500 text-white mr-2 flex items-center justify-center">
-                    Ⅱ
-                  </div>
-                  <p className="text-yellow-500 text-sm">Not Urgent & Important</p>
-                </div>
-                <button
-                  className="text-2xl mr-3"
-                  onClick={() => handleOpenModal("NUI")}
-                >
-                  +
-                </button>
-              </div>
-              <ul className="mr-4 ml-2 overflow-y-auto">
-                {tasksNUI.map((task) => (
-                  <li
-                    key={task.task_id}
-                    className="mt-2 border border-yellow-200 text-sm mb-1 rounded-xl"
-                  >
-                    <button
-                      data-testid={Number(task.task_id)}
-                      className="flex items-center justify-between w-full h-10"
-                      onClick={() => handleOpenModal("NUI", task)}
-                    >
-                      <div className="flex items-center ml-2">
-                        <input
-                          type="checkbox"
-                          className="mr-2 w-3 h-3"
-                          checked={task.completed}
-                          onChange={() => handleToggleTask(task.task_id, "NUI")}
-                        />
-                        <span
-                          className={`${task.completed ? "line-through text-gray-500" : ""}`}
-                        >
-                          {task.title}: {task.description}
-                        </span>
-                      </div>
-                      <div className="mr-2">{task.display_due_date ?? task.due_date}</div>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <TaskCard tasks={tasksNUI} quadrant="NUI" handleOpenModal={handleOpenModal} handleToggleTask={handleToggleTask} preventPropagation={preventPropagation} buttonTestID="UI_button_+NUI" gTestID="NUI-Card" />
             {/* Urgent & Unimportant */}
-            <div
-              className="bg-white rounded-lg text-black shadow-md p-4 flex flex-col justify-between"
-              style={{ height: "300px" }}
-            >
-              <div className="flex justify-between items-center mt-1 mb-2">
-                <div className="flex ml-2">
-                  <div className="h-5 w-5 text-sm border rounded-full bg-blue-500 text-white mr-2 flex items-center justify-center">
-                    Ⅲ
-                  </div>
-                  <p className="text-blue-500 text-sm">Urgent & Unimportant</p>
-                </div>
-                <button
-                  className="text-2xl mr-3"
-                  onClick={() => handleOpenModal("UNI")}
-                >
-                  +
-                </button>
-              </div>
-              <ul className="mr-4 ml-2 overflow-y-auto">
-                {tasksUNI.map((task) => (
-                  <li
-                    key={task.task_id}
-                    className="mt-2 border border-blue-200 text-sm mb-1 rounded-xl"
-                  >
-                    <button
-                      data-testid={Number(task.task_id)}
-                      className="flex items-center justify-between w-full h-10"
-                      onClick={() => handleOpenModal("UNI", task)}
-                    >
-                      <div className="flex items-center ml-2">
-                        <input
-                          type="checkbox"
-                          className="mr-2 w-3 h-3"
-                          checked={task.completed}
-                          onChange={() => handleToggleTask(task.task_id, "UNI")}
-                        />
-                        <span
-                          className={`${task.completed ? "line-through text-gray-500" : ""}`}
-                        >
-                          {task.title}: {task.description}
-                        </span>
-                      </div>
-                      <div className="mr-2">{task.display_due_date ?? task.due_date}</div>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <TaskCard tasks={tasksUNI} quadrant="UNI" handleOpenModal={handleOpenModal} handleToggleTask={handleToggleTask} preventPropagation={preventPropagation} buttonTestID="UI_button_+UNI" gTestID="UNI-Card" />
             {/* Not Urgent & Unimportant */}
-            <div
-              className="bg-white rounded-lg text-black shadow-md p-4 flex flex-col justify-between"
-              style={{ height: "300px" }}
-            >
-              <div className="flex justify-between items-center mt-1 mb-2">
-                <div className="flex ml-2">
-                  <div className="h-5 w-5 text-sm border rounded-full bg-green-500 text-white mr-2 flex items-center justify-center">
-                    Ⅳ
-                  </div>
-                  <p className="text-green-500 text-sm">Not Urgent & Unimportant</p>
-                </div>
-                <button
-                  className="text-2xl mr-3"
-                  onClick={() => handleOpenModal("NUNI")}
-                >
-                  +
-                </button>
-              </div>
-              <ul className="mr-4 ml-2 overflow-y-auto">
-                {tasksNUNI.map((task) => (
-                  <li
-                    key={task.task_id}
-                    className="mt-2 border border-green-200 text-sm mb-1 rounded-xl"
-                  >
-                    <button
-                      data-testid={Number(task.task_id)}
-                      className="flex items-center justify-between w-full h-10"
-                      onClick={() => handleOpenModal("NUNI", task)}
-                    >
-                      <div className="flex items-center ml-2">
-                        <input
-                          type="checkbox"
-                          className="mr-2 w-3 h-3"
-                          checked={task.completed}
-                          onChange={() => handleToggleTask(task.task_id, "NUNI")}
-                        />
-                        <span
-                          className={`${task.completed ? "line-through text-gray-500" : ""}`}
-                        >
-                          {task.title}: {task.description}
-                        </span>
-                      </div>
-                      <div className="mr-2">{task.display_due_date ?? task.due_date}</div>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <TaskCard tasks={tasksNUNI} quadrant="NUNI" handleOpenModal={handleOpenModal} handleToggleTask={handleToggleTask} preventPropagation={preventPropagation} buttonTestID="UI_button_+NUNI" gTestID="NUNI-Card" />
           </div>
         </div>
       </div>

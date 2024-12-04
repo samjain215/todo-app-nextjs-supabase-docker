@@ -108,7 +108,7 @@ describe('NewHome Component', () => {
     expect(screen.getByText(/Eisenhower Matrix/i)).toBeInTheDocument();
 
     // Open the modal
-    const openModalButton = screen.getByTestId('UI_button_+');
+    const openModalButton = screen.getByTestId('UI_button_+UI');
     await act(async () => {
       fireEvent.click(openModalButton);
     });
@@ -137,7 +137,7 @@ describe('NewHome Component', () => {
     // Verify the modal is closed
     expect(screen.queryByText('Add New Task')).not.toBeInTheDocument();
 
-    // Verify the new task is added to the task list
-    expect(screen.getByText('Test Task')).toBeInTheDocument();
+    // Use separate assertions for title and description
+    expect(screen.getByText('Test Task: This is a test task')).toBeInTheDocument();
   });
 });
