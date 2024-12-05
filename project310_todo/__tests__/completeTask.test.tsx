@@ -53,28 +53,28 @@ global.fetch = jest.fn(() =>
               "category_id": 11,
               "name": "Clients"
             }
-          ]
-        },
-        profile: { username: "Samyak Jain" },
-        tasks: {
-          UI: [
-            {
-              task_id: 12,
-              user_id: 'c3978581-4ec1-4f63-9cb1-f2583d2f4b73',
-              title: 'study',
-              description: 'just do it ',
-              category_id: 1,
-              priority_id: 3,
-              due_date: '29 Dec',
-              status: 'Pending',
-              created_at: '2024-11-29T01:25:12.764245+00:00',
-              updated_at: null,
-              completed: false,
-            },
           ],
-          NUI: [],
-          UNI: [],
-          NUNI: []
+          profile: { username: "Samyak Jain" },
+          tasks: {
+            UI: [
+              {
+                task_id: 12,
+                user_id: 'c3978581-4ec1-4f63-9cb1-f2583d2f4b73',
+                title: 'weed',
+                description: 'smoke it ',
+                category_id: 1,
+                priority_id: 3,
+                due_date: '29 Dec',
+                status: 'Pending',
+                created_at: '2024-11-29T01:25:12.764245+00:00',
+                updated_at: null,
+                completed: false,
+              },
+            ],
+            NUI: [],
+            UNI: [],
+            NUNI: []
+          },
         },
       }),
   })

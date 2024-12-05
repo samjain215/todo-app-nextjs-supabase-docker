@@ -44,7 +44,7 @@ export default function Profile() {
             const json = await response.json();
 
             if (json.profile) {
-                const myProfile = json.profile;
+                const myProfile = json.data.profile;
 
                 // Set initial and current values, ensuring they're never undefined
                 setInitialProfileName(myProfile.username || "");

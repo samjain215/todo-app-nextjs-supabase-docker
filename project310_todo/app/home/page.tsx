@@ -46,7 +46,7 @@ export default function NewHome() {
     if (json["error"]) {
       alert(`Error: ${json["error"]}`);
     } else {
-      const username = json["profile"]["username"];
+      const username = json['data']["profile"]["username"];
       if (username != "") setDisplayName(username);
     }
   };
@@ -59,36 +59,37 @@ export default function NewHome() {
 
     const json = await response.json();
     console.log("JSON => ", json);
-    if (json["tasks"]["UI"].length > 0) {
+    const apiResponseForTask = json['data']['tasks']
+    if (apiResponseForTask["UI"].length > 0) {
       setTasksUI(
-        json["tasks"]["UI"].sort(
+        apiResponseForTask["UI"].sort(
           (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
     } else {
       setTasksUI([]);
     }
-    if (json["tasks"]["NUI"].length > 0) {
+    if (apiResponseForTask["NUI"].length > 0) {
       setTasksNUI(
-        json["tasks"]["NUI"].sort(
+        apiResponseForTask["NUI"].sort(
           (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
     } else {
       setTasksNUI([]);
     }
-    if (json["tasks"]["UNI"].length > 0) {
+    if (apiResponseForTask["UNI"].length > 0) {
       setTasksUNI(
-        json["tasks"]["UNI"].sort(
+        apiResponseForTask["UNI"].sort(
           (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
     } else {
       setTasksUNI([]);
     }
-    if (json["tasks"]["NUNI"].length > 0) {
+    if (apiResponseForTask["NUNI"].length > 0) {
       setTasksNUNI(
-        json["tasks"]["NUNI"].sort(
+        apiResponseForTask["NUNI"].sort(
           (a: Task, b: Task) => Number(a.completed) - Number(b.completed)
         )
       );
@@ -234,14 +235,14 @@ export default function NewHome() {
   // Handle task submission
   const handleSubmitTask = () => {
     const newTaskData: Task = {
-      task_id: Date.now(), // Generate unique id
+      task_id: currentTask ? currentTask.task_id : Date.now(), // Generate unique id
       user_id: userID,
       title: newTask.title,
       description: newTask.description,
       completed: currentTask ? currentTask.completed : false,
       due_date: newTask.due_date,
       priority_id: 0,
-      category_id: currentCategory.category_id,
+      category_id: currentTask ? currentTask.category_id : currentCategory.category_id,
       display_due_date: newTask.display_due_date,
     };
 

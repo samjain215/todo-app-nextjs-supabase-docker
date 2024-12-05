@@ -8,59 +8,73 @@ global.fetch = jest.fn(() =>
     json: () =>
       Promise.resolve({
         data: {
-            "categories": [
+          "categories": [
+            {
+              "category_id": 1,
+              "name": "Work"
+            },
+            {
+              "category_id": 2,
+              "name": "Personal"
+            },
+            {
+              "category_id": 3,
+              "name": "Health"
+            },
+            {
+              "category_id": 4,
+              "name": "Urgent"
+            },
+            {
+              "category_id": 5,
+              "name": "Education"
+            },
+            {
+              "category_id": 6,
+              "name": "Shopping"
+            },
+            {
+              "category_id": 7,
+              "name": "Fitness"
+            },
+            {
+              "category_id": 8,
+              "name": "Hobbies"
+            },
+            {
+              "category_id": 9,
+              "name": "Travel"
+            },
+            {
+              "category_id": 10,
+              "name": "Finance"
+            },
+            {
+              "category_id": 11,
+              "name": "Clients"
+            }
+          ],
+          profile: { username: "Samyak Jain" },
+          tasks: {
+            UI: [
               {
-                "category_id": 1,
-                "name": "Work"
+                task_id: 12,
+                user_id: 'c3978581-4ec1-4f63-9cb1-f2583d2f4b73',
+                title: 'weed',
+                description: 'smoke it ',
+                category_id: 1,
+                priority_id: 3,
+                due_date: '29 Dec',
+                status: 'Pending',
+                created_at: '2024-11-29T01:25:12.764245+00:00',
+                updated_at: null,
+                completed: false,
               },
-              {
-                "category_id": 2,
-                "name": "Personal"
-              },
-              {
-                "category_id": 3,
-                "name": "Health"
-              },
-              {
-                "category_id": 4,
-                "name": "Urgent"
-              },
-              {
-                "category_id": 5,
-                "name": "Education"
-              },
-              {
-                "category_id": 6,
-                "name": "Shopping"
-              },
-              {
-                "category_id": 7,
-                "name": "Fitness"
-              },
-              {
-                "category_id": 8,
-                "name": "Hobbies"
-              },
-              {
-                "category_id": 9,
-                "name": "Travel"
-              },
-              {
-                "category_id": 10,
-                "name": "Finance"
-              },
-              {
-                "category_id": 11,
-                "name": "Clients"
-              }
-            ]
+            ],
+            NUI: [],
+            UNI: [],
+            NUNI: []
           },
-        profile: { username: "Samyak Jain" },
-        tasks: {
-          UI: [],
-          NUI: [],
-          UNI: [],
-          NUNI: []
         },
       }),
   })
@@ -132,32 +146,32 @@ jest.mock('next/navigation', () => ({
 }));
 
 describe('NewHome Component Category Selector', () => {
-    it('opens the category selector and selects a category', async () => {
-      // Render the component inside an act() block
-      await act(async () => {
-        render(<NewHome />);
-      });
-
-      // Verify the Eisenhower Matrix is present
-      expect(screen.getByText(/Eisenhower Matrix/i)).toBeInTheDocument();
-
-      // Open the category selector
-      const categorySelectorButton = screen.getByTestId('category-selector'); // Assuming there's a button like this to open selector
-      await act(async () => {
-        fireEvent.click(categorySelectorButton);
-      });
-
-      // Check if a list is displayed
-      expect(screen.getByText('Hobbies')).toBeInTheDocument();
-      expect(screen.getByText('Shopping')).toBeInTheDocument();
-
-      // Select a category from the dropdown or list
-      const categoryOption = screen.getByTestId(1); // Directly searching for the category option to click
-      await act(async () => {
-        fireEvent.click(categoryOption);
-      });
-
-      // Verify that the selected category is displayed in the button
-      expect(categorySelectorButton).toHaveTextContent('Work'); // Make sure the category selector button displays the selected category
+  it('opens the category selector and selects a category', async () => {
+    // Render the component inside an act() block
+    await act(async () => {
+      render(<NewHome />);
     });
+
+    // Verify the Eisenhower Matrix is present
+    expect(screen.getByText(/Eisenhower Matrix/i)).toBeInTheDocument();
+
+    // Open the category selector
+    const categorySelectorButton = screen.getByTestId('category-selector'); // Assuming there's a button like this to open selector
+    await act(async () => {
+      fireEvent.click(categorySelectorButton);
+    });
+
+    // Check if a list is displayed
+    expect(screen.getByText('Hobbies')).toBeInTheDocument();
+    expect(screen.getByText('Shopping')).toBeInTheDocument();
+
+    // Select a category from the dropdown or list
+    const categoryOption = screen.getByTestId(1); // Directly searching for the category option to click
+    await act(async () => {
+      fireEvent.click(categoryOption);
+    });
+
+    // Verify that the selected category is displayed in the button
+    expect(categorySelectorButton).toHaveTextContent('Work'); // Make sure the category selector button displays the selected category
   });
+});

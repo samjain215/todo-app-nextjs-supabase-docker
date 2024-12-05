@@ -53,28 +53,28 @@ global.fetch = jest.fn(() =>
               "category_id": 11,
               "name": "Clients"
             }
-          ]
-        },
-        profile: { username: 'Samyak Jain' },
-        tasks: {
-          UI: [
-            {
-              task_id: 1,
-              user_id: 'c3978581-4ec1-4f63-9cb1-f2583d2f4b73',
-              title: 'Initial Task Title',
-              description: 'Initial Task Description',
-              category_id: 1,
-              priority_id: 3,
-              due_date: '2024-12-29',
-              status: 'Pending',
-              created_at: '2024-11-29T01:25:12.764245+00:00',
-              updated_at: null,
-              completed: false,
-            },
           ],
-          NUI: [],
-          UNI: [],
-          NUNI: [],
+          profile: { username: "Samyak Jain" },
+          tasks: {
+            UI: [
+              {
+                task_id: 12,
+                user_id: 'c3978581-4ec1-4f63-9cb1-f2583d2f4b73',
+                title: 'weed',
+                description: 'smoke it ',
+                category_id: 1,
+                priority_id: 3,
+                due_date: '29 Dec',
+                status: 'Pending',
+                created_at: '2024-11-29T01:25:12.764245+00:00',
+                updated_at: null,
+                completed: false,
+              },
+            ],
+            NUI: [],
+            UNI: [],
+            NUNI: []
+          },
         },
       }),
   })
@@ -156,10 +156,10 @@ describe('NewHome Component', () => {
     expect(screen.getByText(/Eisenhower Matrix/i)).toBeInTheDocument();
 
     // Verify the initial task is present
-    expect(screen.getByText("Initial Task Title: Initial Task Description")).toBeInTheDocument();
+    expect(screen.getByText("weed: smoke it")).toBeInTheDocument();
 
     // Find the edit button for the task with task_id '1'
-    const editButton = screen.getByTestId("button-1");
+    const editButton = screen.getByTestId("button-12");
 
     // Click the edit button
     await act(async () => {

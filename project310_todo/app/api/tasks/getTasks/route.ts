@@ -74,12 +74,12 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({
-      tasks: taskMap,
+      data: { tasks: taskMap },
     });
   }
 
   return NextResponse.json({
-    tasks: tasks.data,
+    data: { tasks: tasks.data },
   });
 }
 

@@ -19,25 +19,29 @@ export async function POST(req: NextRequest) {
 
     if (profile) {
       return NextResponse.json({
-        profile: {
-          username: profile.username,
-          status: profile.status,
-          description: profile.description,
+        data: {
+          profile: {
+            username: profile.username,
+            status: profile.status,
+            description: profile.description,
+          },
         },
       });
     } else {
       return NextResponse.json({
-        profile: {
-          username: "",
-          status: "",
-          description: "",
+        data: {
+          profile: {
+            username: "",
+            status: "",
+            description: "",
+          },
         },
       });
     }
   } catch (e) {
     console.log(e);
     return NextResponse.json({
-      profile: null,
+      data: null,
       error: e,
     });
   }
