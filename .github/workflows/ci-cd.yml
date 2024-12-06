@@ -18,6 +18,6 @@ jobs:
         with:
           node-version: 20.x
       - name: Install Dependencies
-        run: cd project310_todo && npm install -f
+        run: npm install -f
       - name: Build Docker Image
         run: docker build -t nextjs-cicd-docker .
