@@ -30,7 +30,7 @@ jobs:
     needs: build-and-test
 
     # if condition is because we want to run this job only when we push code to main branch and not on pull request or any other branch push or manual trigger. In ci we want ci to run on push and pull request but we want cd to run only on push to main branch.
-    if: (github.ref == 'refs/heads/samayk/docker_cicd_integration' && github.event_name == 'push') || github.event_name == 'workflow_dispatch'
+    if: "github.ref == 'refs/heads/samayk/docker_cicd_integration' && github.event_name == 'push' || github.event_name == 'workflow_dispatch'"
 
     runs-on: ubuntu-latest
 
