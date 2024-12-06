@@ -23,7 +23,7 @@ jobs:
       - name: Build Docker Image
         run: docker build -t nextjs-cicd-docker .
 
-  deploy:
+deploy:
   name: Deploy to Heroku
   needs: build-and-test
   runs-on: ubuntu-latest
