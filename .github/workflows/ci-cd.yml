@@ -63,7 +63,7 @@ jobs:
       # Tag and Push Docker Image to Heroku
       - name: Tag and Push Docker Image to Heroku
         run: |
-          docker tag nextjs-cicd-docker:1.0 registry.heroku.com/nextjs-cicd-docker/web
+          docker tag nextjs-cicd-docker registry.heroku.com/nextjs-cicd-docker/web
           docker push registry.heroku.com/nextjs-cicd-docker/web
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
