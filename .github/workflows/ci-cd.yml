@@ -6,6 +6,7 @@ on:
       - "**"
   pull_request: null
   workflow_dispatch: null
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -22,56 +23,52 @@ jobs:
       - name: Build Docker Image
         run: docker build -t nextjs-cicd-docker .
 
-# add another job for deployment
   deploy:
     name: Deploy to Heroku
-
-    # this job will run only when the build-and-test job is successful
     needs: build-and-test
-
-    # if condition is because we want to run this job only when we push code to main branch and not on pull request or any other branch push or manual trigger. In ci we want ci to run on push and pull request but we want cd to run only on push to main branch.
-    # if: "github.ref == 'refs/heads/samayk/docker_cicd_integration' && github.event_name == 'push' || github.event_name == 'workflow_dispatch'"
-
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
         with:
-          # presist credentials is false because we don't want to push the code to heroku from github actions. We want to push the code to heroku from heroku cli.
           persist-credentials: false
 
-      # install all dependencies for heroku
-      # install nodejs
+      # Install Docker Compose
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+      # Install Node.js for Heroku CLI
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '20.x'
 
-      # install dependencies
+      # Install Dependencies
       - name: Install Dependencies
         run: npm install -f
 
-      # first we build doker image this is not required if our image in docker hub or any other registry platform
+      # Build Docker Image
       - name: Build Docker Image
         run: docker-compose up --build -d
 
-      # push it to heroku directly
+      # Login to Heroku Container Registry
       - name: Login to the Heroku Container Registry
         run: heroku container:login
         env:
-            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
+      # Tag and Push Docker Image to Heroku
       - name: Tag and Push Docker Image to Heroku
-
-        # nextjs-cicd-docker name will be using for heroku app name not the same as docker image name. we create nextjs-cicd-docker app later . It not required to be same or this is not belong to the docker image name. /web belongs to the service name in docker-compose.yml file.
-        run:
+        run: |
           docker tag nextjs-cicd-docker:1.0 registry.heroku.com/nextjs-cicd-docker/web
           docker push registry.heroku.com/nextjs-cicd-docker/web
-
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
-      # release the image container to the heroku platform
+      # Release Docker Image to Heroku
       - name: Release Docker Image to Heroku
         run: heroku container:release web -a nextjs-cicd-docker
         env:
