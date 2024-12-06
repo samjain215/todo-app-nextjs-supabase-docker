@@ -76,6 +76,12 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
+      - name: Set Heroku Stack to Container
+        run: heroku stack:set container -a nextjs-cicd-docker
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+
       # Release Docker Image to Heroku
       - name: Release Docker Image to Heroku
         run: heroku container:release web -a nextjs-cicd-docker
