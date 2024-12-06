@@ -49,7 +49,7 @@ jobs:
 
       # install dependencies
       - name: Install Dependencies
-        run: npm install
+        run: npm install -f
 
       # first we build doker image this is not required if our image in docker hub or any other registry platform
       - name: Build Docker Image
