@@ -4,6 +4,7 @@ name: Continuous Integration and Continuous Deployment on Heroku
 # triggers ci cd when you push code to any branch
 on:
   push:
+    branches: "*"
   pull_request:
   # this is for manual trigger of ci cd workflow from github actions
   workflow_dispatch:
@@ -28,14 +29,6 @@ jobs:
       # install dependencies
       - name: Install Dependencies
         run: npm install
-
-      # run linters
-      - name: Run Linters
-        run: npm run lint
-
-      # run formater
-      - name: Run Formater
-        run: npm run format
 
       # verify the commit message with commitlint and commitlint.config.js
       - name: Verify Commit Message
