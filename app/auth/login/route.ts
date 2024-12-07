@@ -26,7 +26,12 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  return NextResponse.redirect(url.origin, {
-    status: 301,
-  });
+  return NextResponse.redirect(
+    process.env.NODE_ENV === "production"
+      ? "https://nextjs-cicd-docker-50c52908a5ad.herokuapp.com/verifyEmail"
+      : url.origin,
+    {
+      status: 301,
+    }
+  );
 }
