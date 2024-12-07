@@ -60,8 +60,8 @@ global.fetch = jest.fn(() =>
               {
                 task_id: 12,
                 user_id: 'c3978581-4ec1-4f63-9cb1-f2583d2f4b73',
-                title: 'weed',
-                description: 'smoke it ',
+                title: 'study',
+                description: 'just do it ',
                 category_id: 1,
                 priority_id: 3,
                 due_date: '29 Dec',
