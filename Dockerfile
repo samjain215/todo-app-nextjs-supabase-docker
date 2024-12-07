@@ -17,4 +17,6 @@ COPY . .
 EXPOSE 3000
 
 # Set the default command to run your app
+RUN npm run build
+
 CMD ["npm", "run", "dev"]
