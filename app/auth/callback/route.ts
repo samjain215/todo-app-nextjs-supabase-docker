@@ -1,14 +1,10 @@
-import {
-  createMiddlewareClient,
-  createRouteHandlerClient,
-} from "@supabase/auth-helpers-nextjs";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const code = url.searchParams.get("code");
-  const cookieStore = cookies();
 
   if (code) {
     const cookieStore: any = await cookies();
@@ -24,6 +20,9 @@ export async function GET(req: NextRequest) {
       refresh_token: session!.refresh_token ?? "",
     });
   }
-
-  return NextResponse.redirect(`${url.origin}/home`);
+  const origin =
+    process.env.NODE_ENV === "production"
+      ? "https://nextjs-cicd-docker-50c52908a5ad.herokuapp.com"
+      : `${url.origin}`;
+  return NextResponse.redirect(`${origin}/home`);
 }

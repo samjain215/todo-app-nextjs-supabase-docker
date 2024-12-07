@@ -18,7 +18,10 @@ export async function POST(req: NextRequest) {
   const response = await supabase.auth.signInWithOtp({
     email: email,
     options: {
-      emailRedirectTo: `${url.origin}/auth/callback`,
+      emailRedirectTo:
+        process.env.NODE_ENV === "production"
+          ? "https://nextjs-cicd-docker-50c52908a5ad.herokuapp.com/auth/callback"
+          : `${url.origin}/auth/callback`,
       shouldCreateUser: true,
     },
   });
