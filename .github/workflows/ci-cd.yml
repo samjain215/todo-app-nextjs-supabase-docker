@@ -1,0 +1,90 @@
+name: Continuous Integration and Continuous Deployment on Heroku
+on:
+  push:
+    branches:
+      - samyak/docker_cicd_integration
+      - "**"
+  pull_request: null
+  workflow_dispatch: null
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20.x
+      - name: Install Dependencies
+        run: npm install -f
+      - name: Run Tests
+        run: npm run test
+      - name: Build Docker Image
+        run: docker build -t todo-nextjs-cicd-docker .
+
+  deploy:
+    name: Deploy to Heroku
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      # Install Docker Compose
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+      # Install Heroku CLI (optional if not available)
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+
+      # Install Node.js for Heroku CLI
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.x'
+
+      # Install Dependencies
+      - name: Install Dependencies
+        run: npm install -f
+
+      # Login to Heroku Container Registry
+      - name: Login to the Heroku Container Registry
+        run: heroku container:login
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      # Verify Docker Login (optional for debugging)
+      - name: Verify Docker Login
+        run: docker info
+
+      # Build Docker Image
+      - name: Build Docker Image
+        run: docker-compose up --build -d
+
+      # Tag and Push Docker Image to Heroku
+      - name: Tag and Push Docker Image to Heroku
+        run: |
+          docker tag todo-nextjs-cicd-docker registry.heroku.com/todo-nextjs-cicd-docker/web
+          docker push registry.heroku.com/todo-nextjs-cicd-docker/web
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      - name: Set Heroku Stack to Container
+        run: heroku stack:set container -a todo-nextjs-cicd-docker
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      # Release Docker Image to Heroku
+      - name: Release Docker Image to Heroku
+        run: heroku container:release web -a todo-nextjs-cicd-docker
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}

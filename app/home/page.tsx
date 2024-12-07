@@ -3,9 +3,7 @@
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import Sidebar from "../components/sidebar";
-import { Task } from "../types/db";
 import TaskCard from "../components/task_card";
-import { Category } from "../types/db";
 import { Category, Task } from "../types/db";
 import Selector from "../components/selector";
 
@@ -22,7 +20,7 @@ export default function NewHome() {
   const [tasksUNI, setTasksUNI] = useState < Task[] > ([]);
   const [tasksNUNI, setTasksNUNI] = useState < Task[] > ([]);
   const [showModal, setShowModal] = useState < boolean > (false);
-  const [currentQuadrant, setCurrentQuadrant] = useState("");
+  const [currentQuadrant, setCurrentQuadrant] = useState < "UI" | "NUI" | "UNI" | "NUNI" > ("UI");
   const [currentTask, setCurrentTask] = useState < Task | null > (null);
   const [newTask, setNewTask] = useState({
     title: "",
@@ -151,10 +149,10 @@ export default function NewHome() {
   };
 
   // Handle opening the modal for adding or editing tasks
-  const handleOpenModal = (quadrant, task = null) => {
+  const handleOpenModal = (quadrant: "UI" | "NUI" | "UNI" | "NUNI", task?: Task) => {
     setShowModal(true);
     setCurrentQuadrant(quadrant);
-    setCurrentTask(task);
+    setCurrentTask(task ?? null);
     if (task) {
       setNewTask({
         title: task.title,
@@ -177,7 +175,7 @@ export default function NewHome() {
     }); // Reset form
   };
 
-  const addOrUpdateTaskToState = (quadrant, newTaskData) => {
+  const addOrUpdateTaskToState = (quadrant: "UI" | "NUI" | "UNI" | "NUNI", newTaskData: Task) => {
     switch (quadrant) {
       case "UI":
         if (currentTask) {
@@ -267,30 +265,32 @@ export default function NewHome() {
     handleCloseModal(); // Close modal after task submission
   };
 
-  const removeTaskFromState = (quadrant) => {
-    switch (quadrant) {
-      case "UI":
-        setTasksUI((prevTasks) =>
-          prevTasks.filter((task) => task.task_id !== currentTask.task_id)
-        );
-        break;
-      case "NUI":
-        setTasksNUI((prevTasks) =>
-          prevTasks.filter((task) => task.task_id !== currentTask.task_id)
-        );
-        break;
-      case "UNI":
-        setTasksUNI((prevTasks) =>
-          prevTasks.filter((task) => task.task_id !== currentTask.task_id)
-        );
-        break;
-      case "NUNI":
-        setTasksNUNI((prevTasks) =>
-          prevTasks.filter((task) => task.task_id !== currentTask.task_id)
-        );
-        break;
-      default:
-        break;
+  const removeTaskFromState = (quadrant: "UI" | "NUI" | "UNI" | "NUNI") => {
+    if (currentTask) {
+      switch (quadrant) {
+        case "UI":
+          setTasksUI((prevTasks) =>
+            prevTasks.filter((task) => task.task_id !== currentTask!.task_id)
+          );
+          break;
+        case "NUI":
+          setTasksNUI((prevTasks) =>
+            prevTasks.filter((task) => task.task_id !== currentTask!.task_id)
+          );
+          break;
+        case "UNI":
+          setTasksUNI((prevTasks) =>
+            prevTasks.filter((task) => task.task_id !== currentTask!.task_id)
+          );
+          break;
+        case "NUNI":
+          setTasksNUNI((prevTasks) =>
+            prevTasks.filter((task) => task.task_id !== currentTask!.task_id)
+          );
+          break;
+        default:
+          break;
+      }
     }
   };
 
@@ -316,9 +316,13 @@ export default function NewHome() {
   };
 
 
-  const preventPropagation = (e) => {
-    return e.stopPropagation();
-  }
+  const preventPropagation = (
+    e: React.MouseEvent<HTMLInputElement | HTMLButtonElement, MouseEvent>
+  ): void => {
+    e.stopPropagation();
+  };
+
+
 
   const handleCategorySelected = async (category: Category) => {
     console.log(category);

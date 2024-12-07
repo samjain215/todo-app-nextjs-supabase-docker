@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { Category } from "../types/db";
 
-export default function Selector({ onCategorySelect, testId }) {
+type SelectorProps = {
+    onCategorySelect?: (category: Category) => void; // Optional prop
+    testId?: string; // Optional testId
+};
+
+export default function Selector({ onCategorySelect, testId }: SelectorProps) {
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
     const [isOpen, setIsOpen] = useState(false);
