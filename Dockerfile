@@ -21,6 +21,7 @@ ENV NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3Mi
 EXPOSE 3000
 
 # Set the default command to run your app
+RUN npm cache clean --force
 RUN npm run build
 
 CMD ["npm", "run", "dev"]
