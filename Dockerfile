@@ -8,6 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies with optimizations
+RUN npm cache clean --force
 RUN npm install --force
 
 # Copy the rest of the application code
@@ -21,7 +22,6 @@ ENV NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3Mi
 EXPOSE 3000
 
 # Set the default command to run your app
-RUN npm cache clean --force
 RUN npm run build
 
 CMD ["npm", "run", "dev"]
