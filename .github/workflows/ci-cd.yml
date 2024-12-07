@@ -21,7 +21,7 @@ jobs:
       - name: Install Dependencies
         run: npm install -f
       - name: Build Docker Image
-        run: docker build -t nextjs-cicd-docker .
+        run: docker build -t todo-nextjs-cicd-docker .
 
   deploy:
     name: Deploy to Heroku
@@ -71,19 +71,19 @@ jobs:
       # Tag and Push Docker Image to Heroku
       - name: Tag and Push Docker Image to Heroku
         run: |
-          docker tag nextjs-cicd-docker registry.heroku.com/nextjs-cicd-docker/web
-          docker push registry.heroku.com/nextjs-cicd-docker/web
+          docker tag todo-nextjs-cicd-docker registry.heroku.com/todo-nextjs-cicd-docker/web
+          docker push registry.heroku.com/todo-nextjs-cicd-docker/web
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
       - name: Set Heroku Stack to Container
-        run: heroku stack:set container -a nextjs-cicd-docker
+        run: heroku stack:set container -a todo-nextjs-cicd-docker
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
 
       # Release Docker Image to Heroku
       - name: Release Docker Image to Heroku
-        run: heroku container:release web -a nextjs-cicd-docker
+        run: heroku container:release web -a todo-nextjs-cicd-docker
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}

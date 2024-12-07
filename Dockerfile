@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies with optimizations
-RUN npm install --force --prefer-offline --no-audit --progress=false
+RUN npm install --force
 
 # Copy the rest of the application code
 COPY . .
