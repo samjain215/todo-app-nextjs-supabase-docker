@@ -5,14 +5,14 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   console.log("Hello");
   const url = new URL(req.url);
-  const cookieStore = await cookies(); // Await the cookies call
+  const cookieStore = cookies(); // Await the cookies call
   const formData = await req.formData();
   console.log("FormData: ", formData);
 
   const email = String(formData.get("email"));
 
   const supabase = createRouteHandlerClient({
-    cookies: () => cookieStore,
+    cookies: () => Promise.resolve(cookieStore),
   });
 
   await supabase.auth.signInWithOtp({

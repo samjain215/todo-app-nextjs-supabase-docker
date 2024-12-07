@@ -56,7 +56,7 @@ export default function Profile() {
             } else {
                 throw new Error(json.error || "Unknown error occurred");
             }
-        } catch (e) {
+        } catch (e: any) {
             console.log("Error:", e);
             setError(true);
             setErrorMessage(e);
@@ -83,7 +83,7 @@ export default function Profile() {
                 alert("Profile Has Been Successfully Saved");
             }
             window.location.reload();
-        } catch (e) {
+        } catch (e: any) {
             setError(true);
             setErrorMessage(e);
         }

@@ -1,7 +1,11 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-export default function Sidebar({ displayName }) {
+type SidebarProps = {
+    displayName?: string; // Optional testId
+};
+
+export default function Sidebar({ displayName }: SidebarProps) {
     const router = useRouter();
     const navigateToProfile = () => {
         router.push("/profile");
