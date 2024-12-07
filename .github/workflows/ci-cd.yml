@@ -2,8 +2,7 @@ name: Continuous Integration and Continuous Deployment on Heroku
 on:
   push:
     branches:
-      - samyak/docker_cicd_integration
-      - "**"
+      - main
   pull_request: null
   workflow_dispatch: null
 
