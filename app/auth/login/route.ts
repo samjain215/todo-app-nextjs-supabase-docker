@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     cookies: () => cookieStore,
   });
 
-  const response = await supabase.auth.signInWithOtp({
+  await supabase.auth.signInWithOtp({
     email: email,
     options: {
       emailRedirectTo:
