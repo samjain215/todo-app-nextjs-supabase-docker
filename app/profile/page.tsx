@@ -43,9 +43,8 @@ export default function Profile() {
 
             const json = await response.json();
 
-            if (json.profile) {
-                const myProfile = json.data.profile;
-
+            const myProfile = json.data.profile;
+            if (myProfile) {
                 // Set initial and current values, ensuring they're never undefined
                 setInitialProfileName(myProfile.username || "");
                 setInitialStatus(myProfile.status || "");
@@ -57,10 +56,10 @@ export default function Profile() {
             } else {
                 throw new Error(json.error || "Unknown error occurred");
             }
-        } catch (e) {
-            console.error("Error:", e);
+        } catch (e: any) {
+            console.log("Error:", e);
             setError(true);
-            setErrorMessage(e.message);
+            setErrorMessage(e);
         }
     };
 
@@ -84,7 +83,7 @@ export default function Profile() {
                 alert("Profile Has Been Successfully Saved");
             }
             window.location.reload();
-        } catch (e) {
+        } catch (e: any) {
             setError(true);
             setErrorMessage(e);
         }
@@ -92,7 +91,7 @@ export default function Profile() {
 
     useEffect(() => {
         getUser();
-    }, []);
+    }, [userID]);
 
     const isSaveDisabled =
         profileName === initialProfileName &&
@@ -161,7 +160,7 @@ export default function Profile() {
                 </div>
             ) : (
                 <div className="w-full h-screen flex items-center justify-center bg-gray-400 text-black">
-                    {errorMessage}
+                    {errorMessage.toString()}
                 </div>
             )
             }

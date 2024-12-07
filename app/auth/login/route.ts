@@ -5,25 +5,33 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   console.log("Hello");
   const url = new URL(req.url);
-  const cookieStore = await cookies(); // Await the cookies call
+  const cookieStore = cookies(); // Await the cookies call
   const formData = await req.formData();
   console.log("FormData: ", formData);
 
   const email = String(formData.get("email"));
 
   const supabase = createRouteHandlerClient({
-    cookies: () => cookieStore,
+    cookies: () => Promise.resolve(cookieStore),
   });
 
-  const response = await supabase.auth.signInWithOtp({
+  await supabase.auth.signInWithOtp({
     email: email,
     options: {
-      emailRedirectTo: `${url.origin}/auth/callback`,
+      emailRedirectTo:
+        process.env.NODE_ENV === "production"
+          ? "https://nextjs-cicd-docker-50c52908a5ad.herokuapp.com/auth/callback"
+          : `${url.origin}/auth/callback`,
       shouldCreateUser: true,
     },
   });
 
-  return NextResponse.redirect(url.origin, {
-    status: 301,
-  });
+  return NextResponse.redirect(
+    process.env.NODE_ENV === "production"
+      ? "https://nextjs-cicd-docker-50c52908a5ad.herokuapp.com/verifyEmail"
+      : url.origin,
+    {
+      status: 301,
+    }
+  );
 }

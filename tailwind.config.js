@@ -1,10 +1,9 @@
-import type { Config } from "tailwindcss";
-
-export default {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
   ],
   safelist: [
     "bg-red-500",
@@ -19,7 +18,6 @@ export default {
     "border-yellow-200",
     "border-blue-200",
     "border-green-200",
-    // Include any other variants you use
   ],
   theme: {
     extend: {
@@ -30,4 +28,4 @@ export default {
     },
   },
   plugins: [],
-} satisfies Config;
+};
