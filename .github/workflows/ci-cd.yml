@@ -21,13 +21,7 @@ jobs:
       - name: Install Dependencies
         run: npm install -f
       - name: Run Tests
-        run: |
-          npm test /mnt/data/addTasks.test.tsx
-          npm test /mnt/data/categories.test.tsx
-          npm test /mnt/data/completeTask.test.tsx
-          npm test /mnt/data/deleteTasks.test.tsx
-          npm test /mnt/data/editTasks.test.tsx
-          npm test /mnt/data/Login.test.tsx
+        run: npm run test
       - name: Build Docker Image
         run: docker build -t todo-nextjs-cicd-docker .
 
