@@ -5,11 +5,11 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy only package.json and package-lock.json for dependency installation
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
 # Install dependencies with optimizations
-RUN npm cache clean --force
-RUN npm install --force
+RUN rm -rf node_modules
+RUN npm ci --force
 
 # Copy the rest of the application code
 COPY . .
