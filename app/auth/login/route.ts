@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   console.log("Hello");
-  const url = new URL(req.url);
   const cookieStore = cookies(); // Await the cookies call
   const formData = await req.formData();
   console.log("FormData: ", formData);
@@ -18,20 +17,12 @@ export async function POST(req: NextRequest) {
   await supabase.auth.signInWithOtp({
     email: email,
     options: {
-      emailRedirectTo:
-        process.env.NODE_ENV === "production"
-          ? "https://nextjs-cicd-docker-50c52908a5ad.herokuapp.com/auth/callback"
-          : `${url.origin}/auth/callback`,
+      emailRedirectTo: `${process.env.APP_URL}/auth/callback`,
       shouldCreateUser: true,
     },
   });
 
-  return NextResponse.redirect(
-    process.env.NODE_ENV === "production"
-      ? "https://nextjs-cicd-docker-50c52908a5ad.herokuapp.com/verifyEmail"
-      : url.origin,
-    {
-      status: 301,
-    }
-  );
+  return NextResponse.redirect(`${process.env.APP_URL}/verifyEmail`, {
+    status: 301,
+  });
 }
