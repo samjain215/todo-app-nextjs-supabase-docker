@@ -20,9 +20,5 @@ export async function GET(req: NextRequest) {
       refresh_token: session!.refresh_token ?? "",
     });
   }
-  const origin =
-    process.env.NODE_ENV === "production"
-      ? "https://nextjs-cicd-docker-50c52908a5ad.herokuapp.com"
-      : `${url.origin}`;
-  return NextResponse.redirect(`${origin}/home`);
+  return NextResponse.redirect(`${process.env.APP_URL}/home`);
 }
