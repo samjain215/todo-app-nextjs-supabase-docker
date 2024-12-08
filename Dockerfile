@@ -15,6 +15,7 @@ COPY --from=deps /app/node_modules ./node_modules
 # Set environment variables
 ENV NEXT_PUBLIC_SUPABASE_URL="https://riphhkiyyflheyjdrfqu.supabase.co"
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpcGhoa2l5eWZsaGV5amRyZnF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE4Nzk1NTMsImV4cCI6MjA0NzQ1NTU1M30.n0V7HNeRnH7tUvZZrS73wRLroHcszeKVCEVnCNfAGDY"
+ENV NODE_ENV="production"
 
 # Build the application
 RUN npm run build
