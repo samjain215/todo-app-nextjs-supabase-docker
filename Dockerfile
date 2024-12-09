@@ -19,6 +19,12 @@ RUN npm run build
 FROM node:18-alpine AS runner
 WORKDIR /app
 
+# ENV
+ENV NEXT_PUBLIC_SUPABASE_URL=${sup_url}
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY = ${sup_anon}
+ENV NODE_ENV=${node_env}
+ENV APP_URL=${app_url}
+
 # Copy the built application and dependencies
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
