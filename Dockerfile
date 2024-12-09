@@ -20,6 +20,11 @@ FROM node:18-alpine AS runner
 WORKDIR /app
 
 # ENV
+ARG sup_url
+ARG sup_anon
+ARG node_env
+ARG app_url
+
 ENV NEXT_PUBLIC_SUPABASE_URL=${sup_url}
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY = ${sup_anon}
 ENV NODE_ENV=${node_env}

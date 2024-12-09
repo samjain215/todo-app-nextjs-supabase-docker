@@ -22,7 +22,7 @@ jobs:
       - name: Run Tests
         run: npm run test
       - name: Build Docker Image
-        run: docker build --no-cache --build-arg  sup_url=${{secrets.NEXT_PUBLIC_SUPABASE_URL}} --build-arg  sup_anon=${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}} --build-arg  node_env=production --build-arg  app_url=${{secrets.APP_URL}} -t nextjs-docker-todo-app .
+        run: docker build --no-cache --build-arg  sup_url=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} --build-arg  sup_anon=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }} --build-arg  node_env=production --build-arg  app_url=${{ secrets.APP_URL }} -t nextjs-docker-todo-app .
 
   deploy:
     name: Deploy to Heroku
