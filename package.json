@@ -1,5 +1,6 @@
 {
-  "name": "project310_todo",
+  "name": "nextjs-docker-heroku-todo-app",
+  "description": "NextJS Docker Todo App with CI/CD with GitHub Actions and Deployment on Heroku",
   "version": "0.1.0",
   "private": true,
   "scripts": {
